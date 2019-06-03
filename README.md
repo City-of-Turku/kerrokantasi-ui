@@ -80,3 +80,24 @@ changing the paths therein, you can run the plugin fetcher and it will
 place the plugins to those directories. Note that specifying path on the
 command line overrides the path specified in shared_config.json.
 
+## Theming
+
+Kerrokantasi styles can be themed to match your own brand. Styles are based
+on Bootstrap version 3 (Sass).
+
+Here is an example to show how to apply a custom CSS theme:
+
+Create a file e.g. `my-custom-theme.scss` and apply style imports accordingly
+```
+// This needs to be imported before kerrokantasi styles
+@import "my-custom-variables.scss";
+
+// Import default kerrokantasi styles
+@import "kerrokantasi-ui/assets/sass/kerrokantasi.scss";
+
+// These are imported after the base kerrokantasi styles to apply overrides
+@import "my-custom-styles-and-overrides.scss";
+```
+
+Then change the `kerrokantasi-ui/src/index.js` style import from
+`import '../assets/sass/kerrokantasi.scss';` to `import '../../my-custom-theme.scss';`

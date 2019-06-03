@@ -1,0 +1,37 @@
+$fa-font-path: "~font-awesome/fonts";
+
+$white:         #ffffff !default;
+$light-gray:    #ebedf1 !default;
+$dark-gray:     #525a65 !default;
+$medium-gray:   #abb2bd !default;
+$black:         #000000 !default;
+
+$theme-success:       green !default;
+$theme-success-light: lightgreen !default;
+$theme-info:          RoyalBlue !default;
+$theme-info-light:    lightblue !default;
+$theme-warning:       orange !default;
+$theme-warning-light: gold !default;
+$theme-danger:        red !default;
+$theme-danger-light:  tomato !default;
+
+$theme-primary-dark:    RoyalBlue !default;
+$theme-primary-light:   gold !default;
+
+$theme-secondary-dark:  red !default;
+$theme-secondary-light: lightblue !default;
+
+$theme-highlight-dark:  blue !default;
+$theme-highlight-light: lightgreen !default;
+
+$bootstrap-sass-asset-helper: false !default;
+
+$icon-font-path: "";
+
+$site-footer-height: 400px !default;
+
+// Dimenstions
+$padding-default: 12px !default;
+$padding-small: 6px !default;
+
+$missing-image: $theme-secondary-light !default;
