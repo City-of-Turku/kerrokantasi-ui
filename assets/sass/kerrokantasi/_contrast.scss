@@ -1,0 +1,35 @@
+.high-contrast {
+  nav:first-child {
+    border-bottom: 1px solid black;
+  }
+  nav:last-child {
+    background-color: white;
+    color: black;
+    .navbar-brand,
+    .nav-item a{
+      color: black;
+      &:hover::after{
+        border-color: black;
+      }
+    }
+
+    .navbar-nav > .active > a:hover,
+    .navbar-nav > .active > a::after{
+      color:black;
+      border-color: black;
+    }
+  }
+}
+
+
+.contrast-button{
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+
+}
+
+.fa.fa-adjust{
+  margin-right: .5em;
+  font-size: 1.2em;
+}
