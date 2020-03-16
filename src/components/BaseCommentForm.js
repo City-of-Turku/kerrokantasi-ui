@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {injectIntl, intlShape, FormattedMessage, } from 'react-intl';
 import { Button, Checkbox, FormControl, FormGroup, ControlLabel, Alert } from 'react-bootstrap';
 import classnames from 'classnames';
+import {connect} from 'react-redux';
 import uuid from 'uuid/v1';
 import Icon from '../utils/Icon';
 import {getImageAsBase64Promise} from '../utils/hearing';
@@ -12,7 +13,25 @@ import QuestionResults from './QuestionResults';
 import QuestionForm from './QuestionForm';
 import {localizedNotifyError} from "../utils/notify";
 import {getSectionCommentingErrorMessage} from "../utils/section";
+import {Map, TileLayer, FeatureGroup} from 'react-leaflet';
+import {EditControl} from 'react-leaflet-draw';
+// eslint-disable-next-line import/no-unresolved
+import urls from '@city-assets/urls.json';
+// eslint-disable-next-line import/no-unresolved
+import localization from '@city-i18n/localization.json';
+import leafletMarkerIconUrl from '../../assets/images/leaflet/marker-icon.png';
+import {getCorrectContrastMapTileUrl} from "../utils/map";
+import Leaflet from 'leaflet';
+import leafletMarkerShadowUrl from "../../assets/images/leaflet/marker-shadow.png";
+import leafletMarkerRetinaIconUrl from "../../assets/images/leaflet/marker-icon-2x.png";
 
+Leaflet.Marker.prototype.options.icon = new Leaflet.Icon({
+  iconUrl: leafletMarkerIconUrl,
+  shadowUrl: leafletMarkerShadowUrl,
+  iconRetinaUrl: leafletMarkerRetinaIconUrl,
+  iconSize: [25, 41],
+  iconAnchor: [13, 41],
+});
 export class BaseCommentForm extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -25,6 +44,8 @@ export class BaseCommentForm extends React.Component {
       pinned: false,
       showAlert: true,
       hideName: false,
+      geojson: {},
+      mapAddress: "",
     };
     this.getSelectedImagesAsArray = this.getSelectedImagesAsArray.bind(this);
   }
@@ -60,6 +81,7 @@ export class BaseCommentForm extends React.Component {
         pinned: false,
         showAlert: true,
         hideName: false,
+        mapAddress: "",
       });
       if (this.props.onOverrideCollapse instanceof Function) {
         this.props.onOverrideCollapse();
@@ -86,10 +108,11 @@ export class BaseCommentForm extends React.Component {
     let pluginData = this.getPluginData();
     let nickname = (this.state.nickname === "" ? this.props.nicknamePlaceholder : this.state.nickname);
     let commentText = (this.state.commentText === null ? '' : this.state.commentText);
-    let geojson = null;
+    let geojson = this.state.geojson;
     let label = null;
     let images = this.state.images;
     let pinned = this.state.pinned;
+    let mapAddress = this.state.mapAddress;
 
     // plugin comment will override comment fields, if provided
     if (pluginComment) {
@@ -98,8 +121,9 @@ export class BaseCommentForm extends React.Component {
       pluginData = pluginComment.plugin_data || pluginData;
       label = pluginComment.label || null;
       images = pluginComment.image ? [pluginComment.image] : images;
-      geojson = pluginComment.geojson || null;
+      geojson = pluginComment.geojson || geojson;
       pinned = pluginComment.pinned || null;
+      mapAddress = pluginComment.mapAddress || mapAddress;
     } else if (pluginData && typeof pluginData !== "string") {
       // this is for old-fashioned plugins with only data
       pluginData = JSON.stringify(pluginData);
@@ -112,6 +136,7 @@ export class BaseCommentForm extends React.Component {
       label,
       images,
       pinned,
+      mapAddress,
     );
     this.setState({
       collapsed: false,
@@ -122,6 +147,8 @@ export class BaseCommentForm extends React.Component {
       pinned: false,
       showAlert: true,
       hideName: false,
+      geojson: {},
+      mapAddress: "",
     });
   }
 
@@ -323,6 +350,17 @@ export class BaseCommentForm extends React.Component {
       onClick={this.handleTogglePin}
     />
   );
+  onDrawCreate = (event) => {
+    this.setState({geojson: event.layer.toGeoJSON().geometry});
+  }
+
+  onDrawDelete = () => {
+    this.setState({geojson: null});
+  }
+
+  handleMapAddressChange(event) {
+    this.setState({mapAddress: event.target.value});
+  }
 
   render() {
     const {language, section, onChangeAnswers, answers, loggedIn, closed, user} = this.props;
@@ -387,6 +425,63 @@ export class BaseCommentForm extends React.Component {
             onChange={this.handleTextChange.bind(this)}
             id="commentTextField"
           />
+          <div className="comment-form__map-container"style={{ marginTop: 20}}>
+            <div>
+              <label htmlFor="commentMapAddress">
+                <span>Merkkaa ehdotuksesi kartalle</span>
+              </label>
+            </div>
+            <span style={{fontSize: 13}}>Tässä tarkempia ohjeita jne Lorem  ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo  ligula eget dolor.</span>
+            <FormGroup>
+              <FormControl
+                id="commentMapAddress"
+                type="text"
+                value={this.state.mapAddress}
+                onChange={this.handleMapAddressChange.bind(this)}
+                maxLength={32}
+              />
+            </FormGroup>
+            <Map
+              center={localization.mapPosition}
+              scrollWheelZoom={false}
+              zoom={15}
+              maxZoom={18}
+              minZoom={13}
+              style={{height: 300, width: '100%'}}
+              maxBounds={([[60.482780, 22.214274], [60.419067, 22.362864]])}
+            >
+              <TileLayer
+              url={getCorrectContrastMapTileUrl(urls.rasterMapTiles,
+                urls.highContrastRasterMapTiles, this.props.isHighContrast)}
+              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+              />
+              <FeatureGroup>
+                <EditControl
+                position="topleft"
+                onCreated={this.onDrawCreate}
+                onDeleted={this.onDrawDelete}
+                draw={{
+                  circle: false,
+                  circlemarker: false,
+                  polyline: false,
+                  polygon: false,
+                  rectangle: false,
+                  marker: {
+                  icon: new Leaflet.Icon({
+                  iconUrl: leafletMarkerIconUrl,
+                  shadowUrl: leafletMarkerShadowUrl,
+                  iconRetinaUrl: leafletMarkerRetinaIconUrl,
+                  iconSize: [25, 41],
+                  iconAnchor: [13, 41],
+                })
+                }}}
+                edit={{
+                  edit: false,
+                }}
+                />
+              </FeatureGroup>
+            </Map>
+          </div>
           <div className="comment-form__selected-images">
             {this.state.imageTooBig
               ? (
@@ -463,6 +558,7 @@ BaseCommentForm.propTypes = {
   closed: PropTypes.bool,
   user: PropTypes.object,
   isReply: PropTypes.bool,
+  isHighContrast: PropTypes.bool,
 };
 
 BaseCommentForm.defaultProps = {
@@ -472,4 +568,8 @@ BaseCommentForm.defaultProps = {
   isReply: false,
 };
 
-export default injectIntl(BaseCommentForm);
+const mapStateToProps = (state) => ({
+  isHighContrast: state.accessibility.isHighContrast,
+});
+const WrappedBaseCommentForm = connect(mapStateToProps, null)(injectIntl(BaseCommentForm));
+export default WrappedBaseCommentForm;
