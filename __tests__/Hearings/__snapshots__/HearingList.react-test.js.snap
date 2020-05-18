@@ -185,6 +185,8 @@ exports[`HearingsList component should render as expected 1`] = `
                   "hearingOnlyAvailableInLang-sv": "ruotsiksi",
                   "hearingOpeningTime": "Avautumisaika",
                   "hearingOpeningTimePlaceholder": "Valitse...",
+                  "hearingPreviewLink": "Kopioi linkki",
+                  "hearingPreviewLinkTooltip": "Kopioi esikatselulinkki leikepöydälle.",
                   "hearingSavingFailed": "Tallentaminen epäonnistui",
                   "hearingSlug": "Kuulemisen osoite (täytä osoitteen loppuosa)",
                   "hearingSlugPlaceholder": "esimerkki-osoite",
