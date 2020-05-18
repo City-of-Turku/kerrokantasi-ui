@@ -246,6 +246,8 @@ exports[`Hearings component should render as expected 1`] = `
           "hearingOpeningTime": "Avautumisaika",
           "hearingOpeningTimePlaceholder": "Valitse...",
           "hearingPreviewLink": "Kopioi linkki",
+          "hearingPreviewLinkFailed": "Linkin kopioiminen epäonnistui.",
+          "hearingPreviewLinkSuccess": "Linkki kopioitu leikepöydälle.",
           "hearingPreviewLinkTooltip": "Kopioi esikatselulinkki leikepöydälle.",
           "hearingSavingFailed": "Tallentaminen epäonnistui",
           "hearingSlug": "Kuulemisen osoite (täytä osoitteen loppuosa)",
