@@ -3,6 +3,7 @@ import {normalize} from 'normalizr';
 import uuid from 'uuid/v1';
 import pickBy from 'lodash/pickBy';
 import includes from 'lodash/includes';
+import first from 'lodash/first';
 import {assign, flowRight} from 'lodash';
 import updeep from 'updeep';
 
@@ -141,4 +142,61 @@ export const initNewProject = () => {
     title: {},
     phases: []
   };
+};
+
+export const cleanHearing = (hearing) => {
+  const featureCollectionReducer = function (accumulator, currentValue) {
+    const feature = {
+      type: 'Feature',
+      geometry: currentValue
+    };
+    accumulator.push(feature);
+    return accumulator;
+  };
+  let cleanedHearing = {};
+  if (hearing.geojson.length <= 1) {
+    console.log('eka');
+    cleanedHearing = Object.assign({}, hearing, {
+      sections: hearing.sections.reduce((sections, section) => [...sections, Object.assign({}, section, {id: ''})], []),
+      geojson: first(hearing.geojson)
+    });
+    // eslint-disable-next-line brace-style
+  }
+  else if (typeof hearing === 'object' && hearing.geojson.type === 'FeatureCollection') {
+    console.log('toka');
+    cleanedHearing = Object.assign({}, hearing, {
+      sections: hearing.sections.reduce((sections, section) => [...sections, Object.assign({}, section, {id: ''})], []),
+      geojson: hearing.geojson
+    });
+  } else if (hearing.geojson.length > 1) {
+    console.log('kolmas');
+    const tempArr = hearing.geojson;
+    cleanedHearing = Object.assign({}, hearing, {
+      sections: hearing.sections.reduce((sections, section) => [...sections, Object.assign({}, section, {id: ''})], []),
+      geojson: { type: 'FeatureCollection', features: tempArr.reduce(featureCollectionReducer, [])}
+    });
+  } else {
+    console.log('viimene');
+    cleanedHearing = Object.assign({}, hearing, {
+      sections: hearing.sections.reduce((sections, section) => [...sections, Object.assign({}, section, {id: ''})], []),
+      geojson: hearing.geojson
+    });
+  }
+  return cleanedHearing;
+};
+
+export const parseCollection = (featureCollection) => {
+  const featureArray = featureCollection.reduce((features, feature) => [...features, feature.geometry], []);
+  return featureArray;
+};
+
+export const normalizeGeoJSON = (hearing, id) => {
+  let origHearing = hearing.entities.hearing[id];
+  if (hearing.entities.hearing[id].geojson.type !== 'FeatureCollection') {
+    const normalizedGeoJSON = Object.assign({}, hearing, {
+      geojson: [...hearing.geojson]
+    });
+    return normalizedGeoJSON;
+  }
+  return hearing;
 };

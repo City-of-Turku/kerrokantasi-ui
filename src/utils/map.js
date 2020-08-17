@@ -1,7 +1,9 @@
 /* eslint-disable id-length */
-import L from 'leaflet';
+import L, {LatLng} from 'leaflet';
 import 'proj4'; // import required for side effect
 import 'proj4leaflet'; // import required for side effect
+import { Polygon, Marker, Polyline, GeoJSON } from 'react-leaflet';
+import React from 'react';
 
 export function EPSG3067() { // eslint-disable-line
   const crsName = 'EPSG:3067';
@@ -29,4 +31,38 @@ export function getCorrectContrastMapTileUrl(normalMapTilesUrl, highContrastMapT
   }
 
   return normalMapTilesUrl;
+}
+
+export function getFeatureCollectionElement(feature, content, marker) {
+  if (feature.geometry) {
+    switch (feature.geometry.type) {
+      case "Polygon": {
+        const latLngs = feature.geometry.coordinates[0].map(([lng, lat]) => new LatLng(lat, lng));
+        return (<Polygon key={Math.random()} positions={latLngs}>{content}</Polygon>);
+      }
+      case "Point": {
+        const latLngs = new LatLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]);
+        return (
+          <Marker
+            position={latLngs}
+            key={Math.random()}
+            icon={new L.Icon({
+              iconUrl: marker.leafletMarkerIconUrl,
+              shadowUrl: marker.leafletMarkerShadowUrl,
+              iconRetinaUrl: marker.leafletMarkerRetinaIconUrl,
+              iconSize: [25, 41],
+              iconAnchor: [13, 41]
+            })}
+          >{content}
+          </Marker>);
+      }
+      case "LineString": {
+        const latLngs = feature.geometry.coordinates(([lng, lat]) => new LatLng(lat, lng));
+        return (<Polyline key={Math.random()} positions={latLngs}>{content}</Polyline>);
+      }
+      default: {
+        return (<GeoJSON data={feature} key={JSON.stringify(feature)}>{content}</GeoJSON>);
+      }
+    }
+  }
 }

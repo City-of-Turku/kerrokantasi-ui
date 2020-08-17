@@ -13,7 +13,7 @@ import leafletMarkerShadowUrl from '../../assets/images/leaflet/marker-shadow.pn
 /* eslint-disable import/no-unresolved */
 import localization from '@city-i18n/localization.json';
 import urls from '@city-assets/urls.json';
-import { getCorrectContrastMapTileUrl } from '../utils/map';
+import { getCorrectContrastMapTileUrl, getFeatureCollectionElement } from '../utils/map';
 /* eslint-enable import/no-unresolved */
 
 class OverviewMap extends React.Component {
@@ -86,6 +86,28 @@ class OverviewMap extends React.Component {
 
       if (geojson) {
         switch (geojson.type) {
+          // eslint-disable-next-line no-lone-blocks
+          case "FeatureCollection": {
+            if (!this.props.disableCollections) {
+            //  contents.push(<GeoJSON data={geojson} key={JSON.stringify(geojson)}>{content}</GeoJSON>);
+              geojson.features.forEach((feature) => {
+                const element = getFeatureCollectionElement(
+                  feature,
+                  content,
+                  {leafletMarkerIconUrl, leafletMarkerShadowUrl, leafletMarkerRetinaIconUrl}
+                );
+                contents.push(element);
+              });
+            } else {
+              const element = getFeatureCollectionElement(
+                geojson.features[0],
+                content,
+                {leafletMarkerIconUrl, leafletMarkerShadowUrl, leafletMarkerRetinaIconUrl}
+              );
+              contents.push(element);
+            }
+          }
+            break;
           case "Polygon": {
             // XXX: This only supports the _first_ ring of coordinates in a Polygon
             const latLngs = geojson.coordinates[0].map(([lng, lat]) => new LatLng(lat, lng));
@@ -105,7 +127,8 @@ class OverviewMap extends React.Component {
                   iconSize: [25, 41],
                   iconAnchor: [13, 41]
                 })}
-              />
+              >{content}
+              </Marker>
             );
           }
             break;
@@ -118,7 +141,7 @@ class OverviewMap extends React.Component {
           // TODO: Implement support for other geometries too (markers, square, circle)
             contents.push(<GeoJSON data={geojson} key={JSON.stringify(geojson)}>{content}</GeoJSON>);
         }
-        contents.push(<GeoJSON key={id} data={geojson}>{content}</GeoJSON>);
+        // contents.push(<GeoJSON key={id} data={geojson}>{content}</GeoJSON>);
       }
     });
     return contents;
@@ -163,6 +186,7 @@ OverviewMap.propTypes = {
   style: PropTypes.object,
   hideIfEmpty: PropTypes.bool,
   enablePopups: PropTypes.bool,
+  disableCollections: PropTypes.bool,
   showOnCarousel: PropTypes.bool,
   mapContainer: PropTypes.object,
   isHighContrast: PropTypes.bool,

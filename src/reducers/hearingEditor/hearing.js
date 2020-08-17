@@ -33,6 +33,21 @@ const data = handleActions(
     [EditorActions.EDIT_HEARING]: (state, { payload: { field, value } }) => {
       return Object.assign({}, state, { [field]: value });
     },
+    // eslint-disable-next-line no-unused-vars
+    [EditorActions.EDIT_HEARING_MAP]: (state, { payload: { field, value } }) => ({
+      ...state,
+      geojson: [...state.geojson, ...value]
+    }),
+    [EditorActions.ADD_MAP_MARKER]: (state, {payload: {value}}) => ({
+      ...state,
+      geojson: [...state.geojson, value]
+    }),
+    [EditorActions.ADD_MAP_MARKER_EXISTING]: (state, {payload: {value}}) =>
+      updeep({
+        geojson: {
+          features: [...state.geojson.features, { type: 'Feature', geometry: value}]
+        }
+      }, state),
     [EditorActions.ADD_SECTION]: (state, { payload: { section } }) => ({
       ...state,
       sections: [...state.sections, section.frontId],

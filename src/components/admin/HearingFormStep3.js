@@ -22,6 +22,7 @@ import urls from '@city-assets/urls.json';
 
 import {hearingShape} from '../../types';
 import { getCorrectContrastMapTileUrl } from '../../utils/map';
+import {parseCollection} from "../../utils/hearingEditor";
 
 // This is needed for the invalidateMap not to fire after the component has dismounted and causing error.
 let mapInvalidator;
@@ -114,20 +115,28 @@ class HearingFormStep3 extends React.Component {
 
   onDrawEdited(event) {
     // TODO: Implement proper onDrawEdited functionality
+    console.log('EDIT');
     this.setState({isEdited: true});
-    this.props.onHearingChange("geojson", getFirstGeometry(event.layers.toGeoJSON()));
+    //    this.props.onHearingChangeMap("geojson", getFirstGeometry(event.layers.toGeoJSON()));
+    this.props.onHearingChangeMap("geojson", event.layer.toGeoJSON().geometry);
   }
 
   onDrawCreated(event) {
     // TODO: Implement proper onDrawCreated functionality
+    console.log('CREATED');
     this.setState({isEdited: true});
-    this.props.onHearingChange("geojson", event.layer.toGeoJSON().geometry);
+    // this.props.onHearingChangeMap("geojson", event.layer.toGeoJSON().geometry);
+    if (this.props.hearing.geojson.features) {
+      this.props.onHearingAddMapMarkerExisting(event.layer.toGeoJSON().geometry);
+    } else {
+      this.props.onHearingAddMapMarker(event.layer.toGeoJSON().geometry);
+    }
   }
 
   onDrawDeleted(event) {
     // TODO: Implement proper onDrawDeleted functionality
     if (event.layers && !isEmpty(event.layers._layers)) {
-      this.props.onHearingChange("geojson", null);
+      this.props.onHearingChange("geojson", []);
       this.setState({isEdited: true});
     }
   }
@@ -137,18 +146,29 @@ class HearingFormStep3 extends React.Component {
       try {
         const featureCollection = JSON.parse(json);
         if (
+          featureCollection.type === 'FeatureCollection' &&
           !isEmpty(featureCollection.features) &&
-          Array.isArray(featureCollection.features) &&
           includes(keys(featureCollection.features[0]), 'geometry') &&
           includes(keys(featureCollection.features[0].geometry), 'type') &&
           includes(keys(featureCollection.features[0].geometry), 'coordinates')
         ) {
-          this.props.onHearingChange("geojson", featureCollection.features[0].geometry);
+          /*
+          const reducer = (accumulator, currentValue) => accumulator.push(currentValue);
+          const arrayyy = featureCollection.features;
+          const temppi = arrayyy.reduce((accumulator, currentValue) => {
+            if (currentValue) {
+              accumulator.push(currentValue);
+            }
+            return accumulator;
+          }, []);
+          */
+          const temp = parseCollection(featureCollection.features);
+          this.props.onHearingChangeMap("geojson", temp);
         } else {
-          localizedNotifyError('Virheellinen tiedosto.');
+          localizedNotifyError('Virheellinen tiedostoEka.');
         }
       } catch (err) {
-        localizedNotifyError('Virheellinen tiedosto.');
+        localizedNotifyError('Virheellinen tiedostoToka.');
       }
     });
   }
@@ -198,10 +218,16 @@ class HearingFormStep3 extends React.Component {
     return {
       circle: false,
       circlemarker: false,
-      marker: false,
-      polyline: false,
-      polygon: false,
-      rectangle: false,
+      marker: {
+        icon: new Leaflet.Icon({
+          iconUrl: leafletMarkerIconUrl,
+          shadowUrl: leafletMarkerShadowUrl,
+          iconRetinaUrl: leafletMarkerRetinaIconUrl,
+          iconSize: [25, 41],
+          iconAnchor: [13, 41],
+        })
+      },
+      polyline: false
     };
   }
 
@@ -247,7 +273,7 @@ class HearingFormStep3 extends React.Component {
                   }
                 }
               />
-              {!this.state.isEdited && getHearingArea(hearing)}
+              {true && getHearingArea(hearing)}
             </FeatureGroup>
           </Map>
         </FormGroup>
@@ -279,6 +305,9 @@ HearingFormStep3.propTypes = {
   hearing: hearingShape,
   onContinue: PropTypes.func,
   onHearingChange: PropTypes.func,
+  onHearingChangeMap: PropTypes.func,
+  onHearingAddMapMarker: PropTypes.func,
+  onHearingAddMapMarkerExisting: PropTypes.func,
   visible: PropTypes.bool,
   language: PropTypes.string,
   isHighContrast: PropTypes.bool,

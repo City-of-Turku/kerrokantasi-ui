@@ -9,7 +9,8 @@ import {getHearingURL, initNewHearing as getHearingSkeleton} from '../utils/hear
 import {
   fillFrontIdsAndNormalizeHearing,
   filterFrontIdsFromAttributes,
-  filterTitleAndContentByLanguage
+  filterTitleAndContentByLanguage,
+  cleanHearing
 } from '../utils/hearingEditor';
 
 export const EditorActions = {
@@ -25,6 +26,8 @@ export const EditorActions = {
   DELETE_ATTACHMENT: 'deleteAttachment',
   DELETE_PHASE: 'deletePhase',
   DELETE_EXISTING_QUESTION: 'deleteExistingQuestion',
+  ADD_MAP_MARKER: 'addMapMarker',
+  ADD_MAP_MARKER_EXISTING: 'addMapMarketExisting',
   ADD_PHASE: 'addPhase',
   ADD_SECTION_ATTACHMENT: 'addSectionAttachment',
   ADD_SECTION: 'addSection',
@@ -36,6 +39,7 @@ export const EditorActions = {
   DELETE_LAST_OPTION: 'deleteLastOption',
   DELETE_TEMP_QUESTION: 'deleteTemporaryQuestion',
   EDIT_HEARING: 'changeHearing',
+  EDIT_HEARING_MAP: 'editMap',
   EDIT_PHASE: 'changePhase',
   EDIT_QUESTION: 'editQuestion',
   EDIT_SECTION_ATTACHMENT: 'editSecionAttachment',
@@ -322,6 +326,23 @@ export function changeHearing(field, value) {
     return dispatch(createAction(EditorActions.EDIT_HEARING)({field, value}));
   };
 }
+export function changeHearingMap(field, value) {
+  return dispatch => {
+    return dispatch(createAction(EditorActions.EDIT_HEARING_MAP)({field, value}));
+  };
+}
+
+export function addMapMarker(value) {
+  return dispatch => {
+    return dispatch(createAction(EditorActions.ADD_MAP_MARKER)({value}));
+  };
+}
+
+export function addMapMarkerExisting(value) {
+  return dispatch => {
+    return dispatch(createAction(EditorActions.ADD_MAP_MARKER_EXISTING)({value}));
+  };
+}
 
 export function changeSection(sectionID, field, value) {
   return dispatch => {
@@ -408,10 +429,10 @@ export function changeHearingEditorLanguages(languages) {
  */
 export function saveHearingChanges(hearing) {
   return (dispatch, getState) => {
-    const cleanedHearing = filterTitleAndContentByLanguage(
+    let cleanedHearing = filterTitleAndContentByLanguage(
       filterFrontIdsFromAttributes(hearing), getState().hearingEditor.languages
     );
-
+    cleanedHearing = cleanHearing(cleanedHearing);
     const preSaveAction = createAction(EditorActions.SAVE_HEARING)({cleanedHearing});
     dispatch(preSaveAction);
     const url = '/v1/hearing/' + cleanedHearing.id;
@@ -539,10 +560,39 @@ export function saveNewHearing(hearing) {
 }
 
 export function saveAndPreviewNewHearing(hearing) {
+  /*
+  const reducer = function (accumulator, currentValue) {
+    const temppi = {
+      type: 'Feature',
+      geometry: currentValue
+    };
+    accumulator.push(temppi);
+    return accumulator;
+  };
+  let cleanedHearing1 = {};
+  if (hearing.geojson.length <= 1) {
+    cleanedHearing1 = Object.assign({}, hearing, {
+      sections: hearing.sections.reduce((sections, section) => [...sections, Object.assign({}, section, {id: ''})], []),
+      geojson: hearing.geojson[0]
+    });
+  } else {
+    cleanedHearing1 = Object.assign({}, hearing, {
+      sections: hearing.sections.reduce((sections, section) => [...sections, Object.assign({}, section, {id: ''})], []),
+      geojson: { type: 'FeatureCollection', features: hearing.geojson.reduce(reducer, [])}
+    });
+  }
+
+   */
   // Clean up section IDs assigned by UI before POSTing the hearing
-  const cleanedHearing = Object.assign({}, hearing, {
+  // geojson: { type: 'FeatureCollection', features: hearing.geojson.reduce((all, one) => [...all, Object.assign({}, one)])}
+  /*
+  const cleanedHearing1 = Object.assign({}, hearing, {
     sections: hearing.sections.reduce((sections, section) => [...sections, Object.assign({}, section, {id: ''})], []),
+    geojson: { type: 'FeatureCollection', features: hearing.geojson.reduce(reducer, [])}
   });
+
+   */
+  const cleanedHearing = cleanHearing(hearing);
   return (dispatch, getState) => {
     const preSaveAction = createAction(EditorActions.POST_HEARING, null, () => ({fyi: 'saveAndPreview'}))({
       hearing: cleanedHearing,

@@ -7,7 +7,10 @@ import {notifyError} from '../../utils/notify';
 import {
   addOption,
   addSectionAttachment,
+  addMapMarker,
+  addMapMarkerExisting,
   changeHearing,
+  changeHearingMap,
   changeHearingEditorLanguages,
   changeSection,
   changeSectionMainImage,
@@ -55,6 +58,15 @@ class HearingEditor extends React.Component {
 
   onHearingChange = (field, value) => {
     this.props.dispatch(changeHearing(field, value));
+  }
+  onHearingChangeMap = (field, value) => {
+    this.props.dispatch(changeHearingMap(field, value));
+  }
+  onHearingAddMapMarker = (value) => {
+    this.props.dispatch(addMapMarker(value));
+  }
+  onHearingAddMapMarkerExisting = (value) => {
+    this.props.dispatch(addMapMarkerExisting(value));
   }
 
   onSectionChange = (sectionID, field, value) => {
@@ -240,6 +252,9 @@ class HearingEditor extends React.Component {
         onDeleteTemporaryQuestion={this.onDeleteTemporaryQuestion}
         onEditSectionAttachmentOrder={this.onEditSectionAttachmentOrder}
         onHearingChange={this.onHearingChange}
+        onHearingChangeMap={this.onHearingChangeMap}
+        onHearingAddMapMarker={this.onHearingAddMapMarker}
+        onHearingAddMapMarkerExisting={this.onHearingAddMapMarkerExisting}
         onLanguagesChange={this.onLanguagesChange}
         onLeaveForm={() => dispatch(closeHearingForm())}
         onQuestionChange={this.onQuestionChange}

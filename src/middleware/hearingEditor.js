@@ -7,7 +7,7 @@ import {
   receiveHearing,
   updateHearingAfterSave
 } from '../actions/hearingEditor';
-import {fillFrontId, fillFrontIds, fillFrontIdsAndNormalizeHearing} from '../utils/hearingEditor';
+import {fillFrontId, fillFrontIds, fillFrontIdsAndNormalizeHearing, normalizeGeoJSON} from '../utils/hearingEditor';
 import {labelResultsSchema, contactPersonResultsSchema} from '../types';
 
 type FSA = {|
@@ -21,8 +21,14 @@ export const normalizeReceivedHearing =
   ({dispatch}: {dispatch: (action: FSA) => void}) => (next: (action: FSA) => any) => (action: FSA) => {
     const NORMALIZE_ACTIONS = ['receiveHearing'];
     if (NORMALIZE_ACTIONS.includes(action.type)) {
-      const hearing = get(action, 'payload.data');
-      dispatch(receiveHearing(fillFrontIdsAndNormalizeHearing(hearing)));
+      let hearing = get(action, 'payload.data');
+
+    //  hearing = normalizeGeoJSON(hearing);
+      hearing = fillFrontIdsAndNormalizeHearing(hearing);
+      const id = Object.keys(hearing.entities.hearing)[0];
+      console.log(hearing.entities.hearing[id].geojson);
+    //  hearing = normalizeGeoJSON(hearing, id);
+      dispatch(receiveHearing(hearing));
     }
     next(action);
   };

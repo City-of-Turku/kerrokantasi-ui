@@ -93,6 +93,9 @@ class HearingForm extends React.Component {
               onDeleteTemporaryQuestion={onDeleteTemporaryQuestion}
               onEditSectionAttachmentOrder={this.props.onEditSectionAttachmentOrder}
               onHearingChange={this.props.onHearingChange}
+              onHearingChangeMap={this.props.onHearingChangeMap}
+              onHearingAddMapMarker={this.props.onHearingAddMapMarker}
+              onHearingAddMapMarkerExisting={this.props.onHearingAddMapMarkerExisting}
               onLanguagesChange={this.props.onLanguagesChange}
               onQuestionChange={onQuestionChange}
               onSectionAttachment={this.props.onSectionAttachment}
@@ -211,6 +214,9 @@ HearingForm.propTypes = {
   onDeleteTemporaryQuestion: PropTypes.func,
   onEditSectionAttachmentOrder: PropTypes.func,
   onHearingChange: PropTypes.func,
+  onHearingChangeMap: PropTypes.func,
+  onHearingAddMapMarker: PropTypes.func,
+  onHearingAddMapMarkerExisting: PropTypes.func,
   onLanguagesChange: PropTypes.func,
   onLeaveForm: PropTypes.func,
   onQuestionChange: PropTypes.func,
