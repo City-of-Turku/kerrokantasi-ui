@@ -58,7 +58,8 @@ class HearingForm extends React.Component {
       addOption,
       deleteOption,
       onQuestionChange,
-      onDeleteTemporaryQuestion
+      onDeleteTemporaryQuestion,
+      isNewHearing
     } = this.props;
     const step = stepNumber.toString();
     const title = formatMessage({id: 'hearingFormHeaderStep' + step});
@@ -106,6 +107,7 @@ class HearingForm extends React.Component {
               sectionMoveDown={sectionMoveDown}
               sectionMoveUp={sectionMoveUp}
               visible={isVisible}
+              isNewHearing={isNewHearing}
             />
           </Panel.Body>
         </Panel.Collapse>
@@ -208,6 +210,7 @@ HearingForm.propTypes = {
   initSingleChoiceQuestion: PropTypes.func,
   intl: intlShape.isRequired,
   isSaving: PropTypes.bool,
+  isNewHearing: PropTypes.bool,
   labels: PropTypes.arrayOf(labelShape),
   language: PropTypes.string,
   onDeleteExistingQuestion: PropTypes.func,

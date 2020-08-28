@@ -229,7 +229,7 @@ class HearingEditor extends React.Component {
   }
 
   getHearingForm() {
-    const {contactPersons, hearing, hearingLanguages, labels, dispatch, show, language} = this.props;
+    const {contactPersons, hearing, hearingLanguages, labels, dispatch, show, language, isNewHearing} = this.props;
 
     if (isEmpty(hearing)) {
       return null;
@@ -269,6 +269,7 @@ class HearingEditor extends React.Component {
         sectionMoveUp={this.sectionMoveUp}
         sections={hearing.sections}
         show={show}
+        isNewHearing={isNewHearing}
       />
     );
   }

@@ -154,11 +154,13 @@ export const cleanHearing = (hearing) => {
     return accumulator;
   };
   let cleanedHearing = {};
-  if (hearing.geojson.length <= 1) {
+  if (hearing.geojson.length === 1) {
     console.log('eka');
+    const tempArr = hearing.geojson;
     cleanedHearing = Object.assign({}, hearing, {
       sections: hearing.sections.reduce((sections, section) => [...sections, Object.assign({}, section, {id: ''})], []),
-      geojson: first(hearing.geojson)
+      geojson: { type: 'FeatureCollection', features: tempArr.reduce(featureCollectionReducer, [])}
+      // geojson: first(hearing.geojson)
     });
     // eslint-disable-next-line brace-style
   }
@@ -186,12 +188,35 @@ export const cleanHearing = (hearing) => {
 };
 
 export const parseCollection = (featureCollection) => {
-  const featureArray = featureCollection.reduce((features, feature) => [...features, feature.geometry], []);
+  // const featureArray = featureCollection.reduce((features, feature) => [...features, feature.geometry], []);
+  const featureArray = featureCollection.reduce((features, feature) => {
+    let foo;
+    if (feature.geometry.coordinates.length === 1) {
+      foo = window.L.GeoJSON.coordsToLatLngs(feature.geometry.coordinates, 1);
+      foo = window.L.GeoJSON.latLngsToCoords(foo, 1);
+    } else {
+      foo = window.L.GeoJSON.coordsToLatLng(feature.geometry.coordinates);
+      foo = window.L.GeoJSON.latLngToCoords(foo, 6);
+    }
+
+    const bar = {
+      coordinates: foo,
+      type: feature.geometry.type,
+    };
+    features.push(bar);
+    /*
+    features.push({
+      coordinates: window.L.GeoJSON.latLngToCoords(foo, 6),
+      type: feature.geometry.type,
+    }); */
+    return features;
+  }, []);
+  console.log(featureArray);
   return featureArray;
 };
 
 export const normalizeGeoJSON = (hearing, id) => {
-  let origHearing = hearing.entities.hearing[id];
+  const origHearing = hearing.entities.hearing[id];
   if (hearing.entities.hearing[id].geojson.type !== 'FeatureCollection') {
     const normalizedGeoJSON = Object.assign({}, hearing, {
       geojson: [...hearing.geojson]

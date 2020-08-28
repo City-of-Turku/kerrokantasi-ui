@@ -113,7 +113,7 @@ export function initNewHearing(inits) {
     contact_persons: [],
     n_comments: 0,
     isNew: true,
-    geojson: []
+    geojson: {type: 'FeatureCollection', features: []},
   }, inits || {});
 }
 

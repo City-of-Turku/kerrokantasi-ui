@@ -96,7 +96,7 @@ export const hearingShape = PropTypes.shape({
   servicemap_url: PropTypes.string,
   sections: PropTypes.arrayOf(sectionShape),
   closed: PropTypes.bool,
-  geojson: geoJSONshape,
+  geojson: PropTypes.arrayOf(geoJSONshape),
   organization: PropTypes.string,
   main_image: sectionImageShape,
   contact_persons: PropTypes.arrayOf(contactShape),
