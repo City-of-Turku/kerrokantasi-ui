@@ -304,7 +304,7 @@ class RichTextEditor extends React.Component {
     this.setState({
       // The third parameter here is a space string, not an empty string
       // If you set an empty string, you will get an error: Unknown DraftEntity key: null
-      editorState: AtomicBlockUtils.insertAtomicBlock( // voiko tämän tehdä toisin esim unstyled?
+      editorState: AtomicBlockUtils.insertAtomicBlock(
         newEditorState,
         entityKey,
         ' '
