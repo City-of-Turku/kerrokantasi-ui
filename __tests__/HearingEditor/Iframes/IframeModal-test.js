@@ -157,6 +157,14 @@ describe('IframeSelectField', () => {
         expect(instance.state.title).toBe("some title");
         expect(instance.state.src).toBe("https://google.fi");
       });
+      test('removes error messages', () => {
+        const instance = getWrapper().instance();
+        instance.setState({showFormErrorMsg: true, inputErrors: {title: "some error"}});
+        const attributes = {title: "some title", src: "https://google.fi"};
+        instance.updateAttributes(attributes);
+        expect(instance.state.inputErrors.title).toBe("");
+        expect(instance.state.showFormErrorMsg).toBe(false);
+      });
     });
 
     describe('handleInputChange', () => {

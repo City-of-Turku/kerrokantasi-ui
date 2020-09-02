@@ -45,7 +45,11 @@ class IframeModal extends React.Component {
 
   // expects data to be parsed attribute values for iframe
   updateAttributes(attributes) {
-    this.setState({...attributes});
+    this.setState({
+      ...attributes,
+      inputErrors: initialState.inputErrors,
+      showFormErrorMsg: false,
+    });
   }
 
   handleInputChange(event) {
