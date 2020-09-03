@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 const IframeEntity = (props) => {
   const {title, src} = props.contentState.getEntity(props.entityKey).getData();
   return (
-    <div>
+    <div style={{overflow: "hidden"}}>
       <iframe title={title} src={src} />
     </div>
   );

@@ -10,6 +10,24 @@ export function stripWrappingFigureTags(htmlInput) {
   return secondStrip;
 }
 
+// finds <iframe> tags wrapped with <div class="iframe-wrapper>"> in given input,
+// removes the wrapping <div> tags and returns the result
+export function stripIframeWrapperDivs(htmlInput) {
+  const wrapperRegex = /(<div class="iframe-wrapper"><iframe)(?<=<iframe)([\s\S]*?)(?=<\/iframe>)(<\/iframe><\/div>)/gi;
+  const result = htmlInput.replace(wrapperRegex, '<iframe$2</iframe>');
+  return result;
+}
+
+// adds wrapping <div> tags to all <iframe> tags
+export function addIframeWrapperDivs(htmlInput) {
+  const startRegex = /<iframe/gi;
+  const endRegex = /<\/iframe>/gi;
+  const responsiveDiv = '<div class="iframe-wrapper">';
+  const firstAddition = htmlInput.replace(startRegex, `${responsiveDiv}<iframe`);
+  const secondAddition = firstAddition.replace(endRegex, '</iframe></div>');
+  return secondAddition;
+}
+
 // returns an object with iframe attributes
 // or empty object if no iframes with attributes are found
 export function parseIframeHtml(htmlInput) {

@@ -23,7 +23,9 @@ describe('IframeEntity', () => {
     return shallow(<IframeEntity {...defaultProps} {...props}/>);
   }
   test('renders with correct props', () => {
-    const iframe = getWrapper().find('iframe');
+    const wrapper = getWrapper();
+    expect(wrapper.prop('style')).toEqual({overflow: "hidden"});
+    const iframe = wrapper.find('iframe');
     expect(iframe).toHaveLength(1);
     const {title, src} = defaultProps.contentState.getEntity().getData();
     expect(iframe.prop('title')).toBe(title);

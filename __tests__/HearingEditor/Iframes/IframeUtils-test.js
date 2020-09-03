@@ -1,5 +1,7 @@
 import {
   stripWrappingFigureTags,
+  stripIframeWrapperDivs,
+  addIframeWrapperDivs,
   parseIframeHtml,
   validateIsNotEmpty,
   validateIsNumber,
@@ -15,6 +17,26 @@ describe('IframeUtils', () => {
       const htmlString = '<div><figure><iframe></iframe></figure><figure><p>text</p></figure></div>';
       const expectedResult = '<div><iframe></iframe><figure><p>text</p></figure></div>';
       expect(stripWrappingFigureTags(htmlString)).toBe(expectedResult);
+    });
+  });
+
+  describe('stripIframeWrapperDivs', () => {
+    test('removes div.iframe-wrapper tags surrounding iframe tags and returns the result', () => {
+      const htmlString = `<div class="iframe-wrapper"><iframe src="https://google.fi">
+      </iframe></div><p>text</p><div class="iframe-wrapper"><iframe src="https://google.fi">
+      </iframe></div><div><iframe></iframe></div><div><iframe></iframe></div>`;
+      const expectedResult = `<iframe src="https://google.fi">
+      </iframe><p>text</p><iframe src="https://google.fi">
+      </iframe><div><iframe></iframe></div><div><iframe></iframe></div>`;
+      expect(stripIframeWrapperDivs(htmlString)).toBe(expectedResult);
+    });
+  });
+
+  describe('addIframeWrapperDivs', () => {
+    test('adds div.iframe-wrapper tags around iframe tags and returns the result', () => {
+      const htmlString = `<div><iframe title="test"></iframe></div>`;
+      const expectedResult = `<div><div class="iframe-wrapper"><iframe title="test"></iframe></div></div>`;
+      expect(addIframeWrapperDivs(htmlString)).toBe(expectedResult);
     });
   });
 

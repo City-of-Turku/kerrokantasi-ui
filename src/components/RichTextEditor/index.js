@@ -16,7 +16,7 @@ import { Map } from 'immutable';
 
 import { BlockStyleControls, InlineStyleControls, IframeControls } from './EditorControls';
 import IframeModal from './Iframe/IframeModal';
-import {stripWrappingFigureTags} from './Iframe/IframeUtils';
+import {stripWrappingFigureTags, stripIframeWrapperDivs, addIframeWrapperDivs} from './Iframe/IframeUtils';
 import IframeEntity from './Iframe/IframeEntity';
 
 const getBlockStyle = (block) => {
@@ -148,7 +148,7 @@ class RichTextEditor extends React.Component {
             }
             return null;
           },
-        })(this.props.value);
+        })(stripIframeWrapperDivs(this.props.value));
         return EditorState.createWithContent(contentState, kerrokantasiDecorator);
       }
       return EditorState.createEmpty(kerrokantasiDecorator);
@@ -198,7 +198,9 @@ class RichTextEditor extends React.Component {
     const contentState = editorState.getCurrentContent();
     const html = stateToHTML(contentState, htmlOptions);
     // strip wrapping figure tags from iframe tags for better accessibility
-    this.props.onChange(stripWrappingFigureTags(html));
+    // and add iframe wrappers which help with iframe screen overflow
+    const iframeWithoutFigureWrap = stripWrappingFigureTags(html);
+    this.props.onChange(addIframeWrapperDivs(iframeWithoutFigureWrap));
   }
 
   onURLChange(event) {
@@ -210,7 +212,9 @@ class RichTextEditor extends React.Component {
     const contentState = editorState.getCurrentContent();
     const html = stateToHTML(contentState, htmlOptions);
     // strip wrapping figure tags from iframe tags for better accessibility
-    this.props.onBlur(stripWrappingFigureTags(html));
+    // and add iframe wrappers which help with iframe screen overflow
+    const iframeWithoutFigureWrap = stripWrappingFigureTags(html);
+    this.props.onBlur(addIframeWrapperDivs(iframeWithoutFigureWrap));
   }
 
   /* HYPERLINK CONTROLS */
