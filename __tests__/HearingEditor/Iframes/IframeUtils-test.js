@@ -59,19 +59,22 @@ describe('IframeUtils', () => {
 
   describe('convertStyleDimensionSettings', () => {
     test('returns attribute object where style dimensions are added as their own object properties', () => {
-      const attributes = {
+      const attributesA = { title: "test", style: "width: 12px;" };
+      const expectedAttributesA = { title: "test", width: "12", style: "" };
+      const attributesB = {
         src: "https://google.fi",
         title: "test",
         style: "border: none; width: 400px; height: 188px;",
       };
-      const expectedAttributes = {
+      const expectedAttributesB = {
         src: "https://google.fi",
         title: "test",
         width: "400",
         height: "188",
         style: "border: none;",
       };
-      expect(convertStyleDimensionSettings(attributes)).toEqual(expectedAttributes);
+      expect(convertStyleDimensionSettings(attributesA)).toEqual(expectedAttributesA);
+      expect(convertStyleDimensionSettings(attributesB)).toEqual(expectedAttributesB);
     });
     test('replaces current attribute dimension properties with style dimensions', () => {
       const attributes = {

@@ -60,8 +60,8 @@ export function convertStyleDimensionSettings(attributes) {
     const width = style.match(widthRegex);
     const height = style.match(heightRegex);
 
-    const widthRemoveRegex = /(?<=;)\s*width:\D*\d+\D*;/gi;
-    const heightRemoveRegex = /(?<=;)\s*height:\D*\d+\D*;/gi;
+    const widthRemoveRegex = /(?<=;|)\s*width:\D*\d+\D*;/gi;
+    const heightRemoveRegex = /(?<=;|)\s*height:\D*\d+\D*;/gi;
     newAttributes.style = style.replace(widthRemoveRegex, '').replace(heightRemoveRegex, '');
 
     if (width) {
