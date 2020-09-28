@@ -89,8 +89,9 @@ class SkipLinkModal extends React.Component {
 
   render() {
     const { isOpen, onClose } = this.props;
+    const formName = "skip-link";
     return (
-      <Modal show={isOpen} onHide={() => onClose()}>
+      <Modal show={isOpen} onHide={onClose}>
         <Modal.Header closeButton>
           <ModalTitle componentClass="h3">
             {<FormattedMessage id="skipLinkModalTitle"/>}
@@ -105,7 +106,7 @@ class SkipLinkModal extends React.Component {
             value={this.state.linkText}
             isRequired
             errorMsg={this.state.inputErrors.linkText}
-            formName="skip-link"
+            formName={formName}
           />
           <RichTextModalTextField
             name="linkOwnId"
@@ -115,7 +116,7 @@ class SkipLinkModal extends React.Component {
             value={this.state.linkOwnId}
             isRequired
             errorMsg={this.state.inputErrors.linkOwnId}
-            formName="skip-link"
+            formName={formName}
           />
           <RichTextModalTextField
             name="linkTargetId"
@@ -125,7 +126,7 @@ class SkipLinkModal extends React.Component {
             value={this.state.linkTargetId}
             isRequired
             errorMsg={this.state.inputErrors.linkTargetId}
-            formName="skip-link"
+            formName={formName}
           />
           <label
             htmlFor="skip-link-is-hidden"
@@ -143,7 +144,7 @@ class SkipLinkModal extends React.Component {
           />
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => onClose()}>
+          <Button onClick={onClose}>
             <FormattedMessage id="cancel"/>
           </Button>
           <Button
