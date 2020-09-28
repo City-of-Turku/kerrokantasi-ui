@@ -151,11 +151,11 @@ class SkipLinkModal extends React.Component {
             bsStyle="primary"
             onClick={this.confirmSkipLink}
           >
-            { <FormattedMessage id="iframeFormButtonAcceptAndAdd" /> }
+            { <FormattedMessage id="formButtonAcceptAndAdd" /> }
           </Button>
           {this.state.showFormErrorMsg &&
             <p id="skip-link-form-submit-error" role="alert" className="rich-text-editor-form-input-error">
-              {getMessage('iframeFormCheckErrors')}
+              {getMessage('formCheckErrors')}
             </p>}
         </Modal.Footer>
       </Modal>

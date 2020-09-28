@@ -107,7 +107,7 @@ describe('SkipLinkModal', () => {
         expect(acceptButton.prop('onClick')).toBe(instance.confirmSkipLink);
         expect(acceptButton.prop('bsStyle')).toBe('primary');
         const acceptButtonText = acceptButton.find('FormattedMessage');
-        expect(acceptButtonText.prop('id')).toBe('iframeFormButtonAcceptAndAdd');
+        expect(acceptButtonText.prop('id')).toBe('formButtonAcceptAndAdd');
       });
       describe('form error text', () => {
         test('is shown when state.showFormErrorMsg is true', () => {
@@ -116,7 +116,7 @@ describe('SkipLinkModal', () => {
           expect(errorText).toHaveLength(1);
           expect(errorText.prop('role')).toBe('alert');
           expect(errorText.prop('className')).toBe('rich-text-editor-form-input-error');
-          expect(errorText.text()).toBe(getMessage('iframeFormCheckErrors'));
+          expect(errorText.text()).toBe(getMessage('formCheckErrors'));
         });
         test('is not shown when state.showFormErrorMsg is false', () => {
           instance.setState({showFormErrorMsg: false});
