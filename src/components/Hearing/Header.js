@@ -22,6 +22,7 @@ import { SectionTypes, isMainSection, isSectionCommentable } from '../../utils/s
 import { stringifyQuery } from '../../utils/urlQuery';
 import { getSections, getIsHearingPublished, getIsHearingClosed } from '../../selectors/hearing';
 import { getUser} from "../../selectors/user";
+import { isUrl } from '../../utils/validation';
 
 export class HeaderComponent extends React.Component {
   getTimetableText(hearing) { // eslint-disable-line class-methods-use-this
@@ -185,8 +186,10 @@ export class HeaderComponent extends React.Component {
   getPreviewLinkButton(isSubSection = false) {
     const {hearing} = this.props;
     const currentLocation = window.location;
-    const subSectionUrl = currentLocation.origin + currentLocation.pathname + "/" + new URL(hearing.preview_url).search;
-    const previewUrl = isSubSection ? subSectionUrl : hearing.preview_url;
+    let previewUrl = hearing.preview_url;
+    if (isSubSection && isUrl(hearing.preview_url)) {
+      previewUrl = currentLocation.origin + currentLocation.pathname + "/" + new URL(hearing.preview_url).search;
+    }
 
     return (
       <div className={isSubSection ? "hearing-meta__element subsection-preview-btn" : "hearing-meta__element"}>
