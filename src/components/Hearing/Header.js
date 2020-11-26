@@ -182,10 +182,14 @@ export class HeaderComponent extends React.Component {
     }
     return <Tooltip id="eye-tooltip">{text}</Tooltip>;
   }
-  getPreviewLinkButton() {
+  getPreviewLinkButton(isSubSection = false) {
     const {hearing} = this.props;
+    const currentLocation = window.location;
+    const subSectionUrl = currentLocation.origin + currentLocation.pathname + "/" + new URL(hearing.preview_url).search;
+    const previewUrl = isSubSection ? subSectionUrl : hearing.preview_url;
+
     return (
-      <div className="hearing-meta__element">
+      <div className={isSubSection ? "hearing-meta__element subsection-preview-btn" : "hearing-meta__element"}>
         <OverlayTrigger
           placement="bottom"
           overlay={
@@ -193,7 +197,7 @@ export class HeaderComponent extends React.Component {
               <FormattedMessage id="hearingPreviewLinkTooltip">{text => text}</FormattedMessage>
             </Tooltip>}
         >
-          <Button bsStyle="info" onClick={() => this.writeToClipboard(hearing.preview_url)}>
+          <Button bsStyle="info" onClick={() => this.writeToClipboard(previewUrl)}>
             <FormattedMessage id="hearingPreviewLink">{text => text}</FormattedMessage>
           </Button>
         </OverlayTrigger>
@@ -278,9 +282,14 @@ export class HeaderComponent extends React.Component {
                   )}
                 </React.Fragment>
               ) : (
-                <Link to={{path: getHearingURL(hearing)}}>
-                  <Icon name="arrow-left" /> <FormattedMessage id="backToHearingMain" />
-                </Link>
+                <React.Fragment>
+                  <Link to={{path: getHearingURL(hearing)}}>
+                    <Icon name="arrow-left" /> <FormattedMessage id="backToHearingMain" />
+                  </Link>
+                  {(!isEmpty(user) && hearing.closed && moment(hearing.close_at) >= moment()) && (
+                      this.getPreviewLinkButton(true)
+                    )}
+                </React.Fragment>
               )}
             </div>
           </Grid>
