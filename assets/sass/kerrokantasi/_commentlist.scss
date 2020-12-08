@@ -272,6 +272,20 @@
         }
       }
     }
+    &__toggle-map {
+      font-family: inherit;
+      font-size: 100%;
+      font-weight: bold;
+      padding: 0;
+      background: transparent;
+      margin-bottom: 10px;
+      border: none;
+      color: #0062ae;
+      &:hover {
+        text-decoration: underline;
+        color: #003762;
+      }
+    }
   }
 
   .sub-comments {

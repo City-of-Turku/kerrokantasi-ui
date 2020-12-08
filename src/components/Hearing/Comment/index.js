@@ -18,6 +18,8 @@ import find from 'lodash/find';
 import getAttr from '../../../utils/getAttr';
 import moment from 'moment';
 
+import HearingMap from "../HearingMap";
+
 class Comment extends React.Component {
   constructor(props) {
     super(props);
@@ -32,6 +34,9 @@ class Comment extends React.Component {
     shouldAnimate: false,
     pinned: this.props.data.pinned,
     answers: this.props.data.answers || [],
+    mapContainer: null,
+    displayMap: false,
+    largeMap: false,
   }
 
   componentDidMount = () => {
@@ -433,6 +438,15 @@ class Comment extends React.Component {
     </div>
   );
 
+  handleSetMapContainer = (mapContainer) => {
+    this.setState({ mapContainer });
+  }
+
+  toggleMap = () => {
+    this.setState({displayMap: !this.state.displayMap});
+  }
+
+
   render() {
     const {data, canReply} = this.props;
     const canEdit = data.can_edit;
@@ -485,6 +499,34 @@ class Comment extends React.Component {
               )
               : null}
           </div>
+          {data.geojson && (
+            <React.Fragment>
+              <button
+                onClick={this.toggleMap}
+                className="hearing-comment__toggle-map"
+              >
+                Näytä kartalla
+              </button>
+            </React.Fragment>
+
+            )}
+          {(this.state.displayMap && data.geojson) && (
+            <div
+              style={{
+                height: '200px',
+                width: `${classnames({'75%': !this.state.largeMap, '100%': this.state.largeMap})}`
+              }}
+              ref={this.handleSetMapContainer}
+            >
+              {data.geojson && (
+                <HearingMap
+                  hearing={{geojson: data.geojson}}
+                  mapContainer={this.state.mapContainer}
+                  mapSettings={{dragging: false}}
+                />
+              )}
+            </div>
+          )}
           {canEdit && this.renderEditLinks()}
           <div className="hearing-comment__actions-bar">
             <div className="hearing-comment__reply-link">
