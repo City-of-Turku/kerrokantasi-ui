@@ -36,7 +36,6 @@ class Comment extends React.Component {
     answers: this.props.data.answers || [],
     mapContainer: null,
     displayMap: false,
-    largeMap: false,
   }
 
   componentDidMount = () => {
@@ -500,30 +499,28 @@ class Comment extends React.Component {
               : null}
           </div>
           {data.geojson && (
-            <React.Fragment>
-              <button
-                onClick={this.toggleMap}
-                className="hearing-comment__toggle-map"
-              >
-                Näytä kartalla
-              </button>
-            </React.Fragment>
-
-            )}
-          {(this.state.displayMap && data.geojson) && (
-            <div
-              style={{
-                height: '200px',
-                width: `${classnames({'75%': !this.state.largeMap, '100%': this.state.largeMap})}`
-              }}
-              ref={this.handleSetMapContainer}
-            >
-              {data.geojson && (
-                <HearingMap
+            <div className="hearing-comment__map">
+              <React.Fragment>
+                <Button
+                  onClick={this.toggleMap}
+                  className="hearing-comment__map-toggle"
+                >
+                  <FormattedMessage id="commentShowMap">{text => text}</FormattedMessage>
+                </Button>
+              </React.Fragment>
+              {(this.state.displayMap && data.geojson) && (
+                <div
+                className="hearing-comment__map-container"
+                ref={this.handleSetMapContainer}
+                >
+                  {data.geojson && (
+                  <HearingMap
                   hearing={{geojson: data.geojson}}
                   mapContainer={this.state.mapContainer}
                   mapSettings={{dragging: false}}
-                />
+                  />
+                  )}
+                </div>
               )}
             </div>
           )}
@@ -579,5 +576,5 @@ Comment.propTypes = {
 Comment.defaultProps = {
   isReply: false,
 };
-
+export {Comment as UnconnectedComment};
 export default injectIntl(Comment);
