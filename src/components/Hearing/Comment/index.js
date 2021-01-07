@@ -504,6 +504,7 @@ class Comment extends React.Component {
                 <Button
                   onClick={this.toggleMap}
                   className="hearing-comment__map-toggle"
+                  aria-expanded={this.state.displayMap}
                 >
                   <FormattedMessage id="commentShowMap">{text => text}</FormattedMessage>
                 </Button>

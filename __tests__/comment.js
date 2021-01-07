@@ -59,8 +59,17 @@ describe('Comment', () => {
       test('main wrapper for the map elements is rendered', () => {
         expect(wrapper.find('.hearing-comment__map')).toHaveLength(1);
       });
-      test('a button to toggle the map is rendered', () => {;
+      test('a button to toggle the map is rendered', () => {
         expect(wrapper.find('.hearing-comment__map-toggle')).toHaveLength(1);
+      });
+
+      test('toggle button aria-expanded changes when button is pressed', () => {
+        const buttonElement = wrapper.find('.hearing-comment__map-toggle');
+        expect(wrapper.find('.hearing-comment__map-toggle').prop('aria-expanded')).toBe(false);
+        buttonElement.simulate('click');
+        expect(wrapper.find('.hearing-comment__map-toggle').prop('aria-expanded')).toBe(true);
+        buttonElement.simulate('click');
+        expect(wrapper.find('.hearing-comment__map-toggle').prop('aria-expanded')).toBe(false);
       });
 
       test('map container is not rendered by default(displayMap: false)', () => {
