@@ -57,12 +57,13 @@ function getHearingArea(hearing) {
     case "Polygon": {
       // XXX: This only supports the _first_ ring of coordinates in a Polygon
       const latLngs = geojson.coordinates[0].map(([lng, lat]) => new LatLng(lat, lng));
-      return <Polygon positions={latLngs}/>;
+      return <Polygon key={Math.random()} positions={latLngs}/>;
     }
     case "Point": {
       const latLngs = new LatLng(geojson.coordinates[1], geojson.coordinates[0]);
       return (
         <Marker
+          key={Math.random()}
           position={latLngs}
           icon={new Leaflet.Icon({
             iconUrl: leafletMarkerIconUrl,
@@ -104,12 +105,13 @@ function getMapElement(geojson) {
     case "Polygon": {
       // XXX: This only supports the _first_ ring of coordinates in a Polygon
       const latLngs = geojson.coordinates[0].map(([lng, lat]) => new LatLng(lat, lng));
-      return <Polygon positions={latLngs}/>;
+      return <Polygon key={Math.random()} positions={latLngs}/>;
     }
     case "Point": {
       const latLngs = new LatLng(geojson.coordinates[1], geojson.coordinates[0]);
       return (
         <Marker
+          key={Math.random()}
           position={latLngs}
           icon={new Leaflet.Icon({
             iconUrl: leafletMarkerIconUrl,
@@ -182,7 +184,6 @@ class HearingFormStep3 extends React.Component {
   onDrawEdited(event) {
     // TODO: Implement proper onDrawEdited functionality
     this.setState({isEdited: true});
-    // console.log('1');
     this.props.onHearingChange("geojson", getFirstGeometry(event.layers.toGeoJSON()));
   }
 
@@ -347,8 +348,6 @@ class HearingFormStep3 extends React.Component {
     if (typeof window === "undefined") return null;  // Skip rendering outside of browser context
     const {FeatureGroup, Map, TileLayer} = require("react-leaflet");  // Late import to be isomorphic compatible
     const {EditControl} = require("react-leaflet-draw");
-    // const hearing = this.props.hearing;
-    // const origData = this.state.initialGeoJSON;
     const {initialGeoJSON} = this.state;
 
     return (
@@ -423,6 +422,7 @@ HearingFormStep3.propTypes = {
   onCreateMapMarker: PropTypes.func,
 };
 
+export {HearingFormStep3 as UnconnectedHearingFormStep3};
 const WrappedHearingFormStep3 = connect(mapStateToProps, null)(injectIntl(HearingFormStep3));
 
 export default WrappedHearingFormStep3;
