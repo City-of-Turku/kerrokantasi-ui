@@ -50,7 +50,6 @@ class App extends React.Component {
     ];
     const fullscreen = this.props.match.params.fullscreen === 'true';
     const headless = checkHeadlessParam(this.props.location.search);
-    const headlessClass = headless ? ' headless' : '';
     const fonts = `"HelsinkiGrotesk",
       Arial, -apple-system,
       BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -76,7 +75,7 @@ class App extends React.Component {
           </Helmet>
           {header}
           <main
-            className={fullscreen ? 'fullscreen' : 'main-content' + headlessClass}
+            className={fullscreen ? 'fullscreen' : classNames('main-content', {headless})}
             id="main-container"
             role="main"
             tabIndex="-1"
