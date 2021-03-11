@@ -278,5 +278,5 @@ OverviewMap.defaultProps = {
   showOnCarousel: false,
   mapContainer: undefined,
 };
-export {OverviewMap as UnconnectedOverviewMap};
+
 export default connect(mapStateToProps, null)(OverviewMap);
