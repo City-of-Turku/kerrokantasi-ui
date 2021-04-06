@@ -166,7 +166,7 @@ class HearingForm extends React.Component {
         <Modal.Header closeButton bsClass="hearing-modal-header">
           <h2><FormattedMessage id="editHearing" /></h2>
           <a
-          style={{lineHeight: 2}}
+            style={{lineHeight: 2}}
             href={config.adminHelpUrl}
             rel="noopener noreferrer"
             target="_blank"
