@@ -93,9 +93,12 @@ class Header extends React.Component {
   }
 
   getNavItem(id, url, addSuffix = true) {
-    const {history, language} = this.props;
+    const {history, language, user} = this.props;
     const active = history && history.location.pathname === url;
     let messageId = id;
+    if (id === 'ownHearings' && (!user || user.adminOrganizations.length === 0)) {
+      return null;
+    }
     if (addSuffix) { messageId += 'HeaderText'; }
     const navLink = (
       <a href="#">

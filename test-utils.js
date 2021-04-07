@@ -586,6 +586,11 @@ export const mockStore = {
         },
       ]
     },
+    userHearingsQueue: {
+      isFetching: false,
+      count: 0,
+      data: []
+    },
     userHearingsClosed: {
       isFetching: false,
       count: 1,

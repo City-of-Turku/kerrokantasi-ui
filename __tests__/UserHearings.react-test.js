@@ -140,7 +140,7 @@ describe('UserHearings', () => {
     });
     describe('hearing fetch methods', () => {
       describe('fetchAllHearings', () => {
-        test('calls fetchHearing 3 times with correct parameters', () => {
+        test('calls fetchHearing 4 times with correct parameters', () => {
           const wrapper = getWrapper();
           wrapper.instance().fetchHearing = jest.fn();
           wrapper.instance().forceUpdate();
@@ -149,7 +149,7 @@ describe('UserHearings', () => {
           const defaultParams = instance.getDefaultParams();
 
           instance.fetchAllHearings();
-          expect(spy).toHaveBeenCalledTimes(3);
+          expect(spy).toHaveBeenCalledTimes(4);
           HEARING_KEYS.forEach((key, index) => {
             const specificParams = SEARCH_PARAMS[key];
             const listID = GET_HEARINGS[key];
@@ -198,7 +198,7 @@ describe('UserHearings', () => {
     describe('hearing list/card methods', () => {
       describe('getHearingListing', () => {
         test('returns LoadSpinner if type isFetching', () => {
-          const wrapper = getWrapper({fetching: {open: true, closed: true, draft: true}});
+          const wrapper = getWrapper({fetching: {open: true, queue: true, closed: true, draft: true}});
           HEARING_KEYS.forEach((key) => {
             const keyType = key.toLowerCase();
             const element = wrapper.instance().getHearingListing(keyType);

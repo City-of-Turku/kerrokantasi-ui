@@ -5,23 +5,24 @@ import {connect} from 'react-redux';
 import {getUser} from "../../selectors/user";
 import {getUserHearingList} from "../../selectors/hearing";
 import {fetchHearingList as fetchHearingListAction} from '../../actions/index';
-import {Button, Col, ControlLabel, FormControl, FormGroup, Row} from 'react-bootstrap';
+import {Button, Col, Row} from 'react-bootstrap';
 import HearingCard from "../../components/HearingCard";
-import Link from "../../components/LinkWithLang";
 import LoadSpinner from "../../components/LoadSpinner";
 import Icon from "../../utils/Icon";
 import Helmet from "react-helmet";
-import classNames from 'classnames';
+import Toolbar from "../../components/UserHearings/Toolbar";
 
 export const GET_HEARINGS = {
   OPEN: 'userHearingsOpen',
+  QUEUE: 'userHearingsQueue',
   CLOSED: 'userHearingsClosed',
   DRAFT: 'userHearingsDrafts'
 };
-
+const now = () => new Date().toISOString();
 export const SEARCH_PARAMS = {
-  OPEN: {published: 'true', open: 'true', limit: 4},
-  CLOSED: {published: 'true', open: 'false', limit: 4},
+  OPEN: {published: 'true', open: 'true', limit: 4, open_at_lte: now()},
+  QUEUE: {published: 'true', limit: 4, open_at_gt: now()},
+  CLOSED: {published: 'true', open: 'false', limit: 4, open_at_lte: now()},
   DRAFT: {published: 'false', limit: 4}
 };
 class UserHearings extends React.Component {
@@ -36,7 +37,7 @@ class UserHearings extends React.Component {
 
   componentDidMount() {
     const {userState: {userExists}, user} = this.props;
-    if (userExists && user) {
+    if (userExists && user && user.adminOrganizations[0]) {
       this.fetchAllHearings();
     }
   }
@@ -50,7 +51,7 @@ class UserHearings extends React.Component {
     }
   }
 
-  changeSort(event) {
+  changeSort = (event) => {
     this.setState({sortHearingsBy: event.target.value});
   }
 
@@ -58,6 +59,7 @@ class UserHearings extends React.Component {
     const params = this.getDefaultParams();
 
     this.fetchHearing(GET_HEARINGS.OPEN, {...SEARCH_PARAMS.OPEN, ...params});
+    this.fetchHearing(GET_HEARINGS.QUEUE, {...SEARCH_PARAMS.QUEUE, ...params});
     this.fetchHearing(GET_HEARINGS.CLOSED, {...SEARCH_PARAMS.CLOSED, ...params});
     this.fetchHearing(GET_HEARINGS.DRAFT, {...SEARCH_PARAMS.DRAFT, ...params});
   }
@@ -95,7 +97,6 @@ class UserHearings extends React.Component {
     const typeParamsWithoutLimit = Object.fromEntries(typeParamsArray);
     this.fetchHearing(GET_HEARINGS[type], {...typeParamsWithoutLimit, ...params});
   }
-
 
   getHearingListing(type) {
     const {fetching, hearingCount, hearingData} = this.props;
@@ -153,111 +154,40 @@ class UserHearings extends React.Component {
     );
   }
 
-  getToolContent() {
-    const {loadOwn, openTools} = this.state;
-    const {intl: {formatMessage}} = this.props;
-    return (
-      <React.Fragment>
-        <div className="col-md-12 tool-buttons">
-          <div>
-            <Link to={{path: '/hearing/new'}} className="btn btn-success">
-              <Icon name="plus" aria-hidden/>
-              {formatMessage({id: 'createHearing'})}
-            </Link>
-          </div>
-          <Button onClick={() => this.toggleDropdown()}>
-            <Icon className={classNames({active: openTools})} name="gear" size="2x" />
-          </Button>
-        </div>
-        <div className={classNames('tool-dropdown', {open: openTools})}>
-          <div className="tool-content">
-            {this.getFormControlSelect()}
-            <div className="hearing-radio">
-              {/* eslint-disable-next-line jsx-a11y/label-has-for */}
-              <label id="show">{formatMessage({id: 'show'})}</label>
-              <form>
-                <div>
-                  <label id="orgLabel">
-                    <input
-                      aria-labelledby="show orgLabel"
-                      type="radio"
-                      value="org"
-                      name="type"
-                      id="orgRadio"
-                      onChange={this.toggleHearingCreator}
-                      checked={!loadOwn}
-                    />
-                    {formatMessage({id: 'organizationHearings'})}
-                  </label>
-                </div>
-                <div>
-                  <label id="ownLabel">
-                    <input
-                      aria-labelledby="show ownLabel"
-                      type="radio"
-                      value="own"
-                      name="type"
-                      id="ownRadio"
-                      onChange={this.toggleHearingCreator}
-                      checked={loadOwn}
-                    />
-                    {formatMessage({id: 'ownHearings'})}
-                  </label>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </React.Fragment>
-    );
-  }
-
-
-  getFormControlSelect() {
-    const {intl: {formatMessage}} = this.props;
-    return (
-      <FormGroup controlId="formControlsSelect" className="hearing-list__filter-bar-filter">
-        <ControlLabel className="hearing-list__filter-bar-label">
-          <FormattedMessage id="sort" />
-        </ControlLabel>
-        <FormControl
-          className="select"
-          componentClass="select"
-          placeholder="select"
-          onChange={event => this.changeSort(event)}
-        >
-          <option value="-created_at">{formatMessage({id: 'newestFirst'})}</option>
-          <option value="created_at">{formatMessage({id: 'oldestFirst'})}</option>
-          <option value="-close_at">{formatMessage({id: 'lastClosing'})}</option>
-          <option value="close_at">{formatMessage({id: 'firstClosing'})}</option>
-          <option value="-open_at">{formatMessage({id: 'lastOpen'})}</option>
-          <option value="open_at">{formatMessage({id: 'firstOpen'})}</option>
-          <option value="-n_comments">{formatMessage({id: 'mostCommented'})}</option>
-          <option value="n_comments">{formatMessage({id: 'leastCommented'})}</option>
-        </FormControl>
-      </FormGroup>
-    );
-  }
-
   toggleHearingCreator = () => {
     this.setState({loadOwn: !this.state.loadOwn});
   }
 
-  toggleDropdown() {
+  toggleDropdown = () => {
     this.setState({openTools: !this.state.openTools});
   }
 
   render() {
-    const {loadOwn} = this.state;
+    const {loadOwn, openTools} = this.state;
     const {
       intl: {formatMessage},
-      userState: {userLoading, userExists}
+      userState: {userLoading, userExists},
+      user
     } = this.props;
     const activeTitle = loadOwn ? 'ownHearings' : 'organizationHearings';
     const helmetTitle = <Helmet title={formatMessage({id: activeTitle})} />;
-    if (userLoading || !userExists) {
+    if (userLoading || !userExists || !user || !user.adminOrganizations || user.adminOrganizations.length === 0) {
       return (helmetTitle);
     }
+    const hearingListings = Object.keys(GET_HEARINGS).reduce((accumulator, currentValue) => {
+      const small = currentValue.toLowerCase();
+      accumulator.push(
+        <Row key={currentValue}>
+          <div className="col-md-12">
+            {this.getHearingHeader(small)}
+          </div>
+          <div className="col-md-12 user-hearing-list">
+            {this.getHearingListing(small)}
+          </div>
+        </Row>
+      );
+      return accumulator;
+    }, []);
     return (
       <div className="user-hearings">
         {helmetTitle}
@@ -269,35 +199,19 @@ class UserHearings extends React.Component {
                   <FormattedMessage id={activeTitle}>{txt => <h1>{txt}</h1>}</FormattedMessage>
                 </div>
                 <div className="col-md-5 tool-container">
-                  {this.getToolContent()}
+                  <Toolbar
+                    loadOwn={loadOwn}
+                    openTools={openTools}
+                    formatMessage={formatMessage}
+                    toggleDropdown={this.toggleDropdown}
+                    toggleHearingCreator={this.toggleHearingCreator}
+                    changeSort={this.changeSort}
+                  />
                 </div>
               </div>
             </div>
           </Row>
-          <Row>
-            <div className="col-md-12">
-              {this.getHearingHeader('open')}
-            </div>
-            <div className="col-md-12 user-hearing-list">
-              {this.getHearingListing('open')}
-            </div>
-          </Row>
-          <Row>
-            <div className="col-md-12">
-              {this.getHearingHeader('closed')}
-            </div>
-            <div className="col-md-12 user-hearing-list">
-              {this.getHearingListing('closed')}
-            </div>
-          </Row>
-          <Row>
-            <div className="col-md-12">
-              {this.getHearingHeader('draft')}
-            </div>
-            <div className="col-md-12 user-hearing-list">
-              {this.getHearingListing('draft')}
-            </div>
-          </Row>
+          {hearingListings}
         </div>
       </div>
     );

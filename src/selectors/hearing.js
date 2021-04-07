@@ -86,6 +86,7 @@ export const getHearingValue = (state, type, key) =>
 export const getUserHearingList = (state, key) => {
   return {
     open: getHearingValue(state, 'userHearingsOpen', key),
+    queue: getHearingValue(state, 'userHearingsQueue', key),
     closed: getHearingValue(state, 'userHearingsClosed', key),
     draft: getHearingValue(state, 'userHearingsDrafts', key),
   };
