@@ -464,7 +464,6 @@ exports[`SortableCommentList component should render as expected 1`] = `
                 "published": "Julkaistu",
                 "publishedHearings": "Julkiset",
                 "publishingQueue": "Julkaisujono",
-                "publishingQueueCount": "Julkaisua odottavat ({n})",
                 "question": "Kysymys",
                 "questionOptionPlaceholder": "Vastausvaihtoehdon teksti.",
                 "questionTextPlaceholder": "Kirjoita tähän kysymys, johon haluat kaupunkilaisten vastaavan.",
