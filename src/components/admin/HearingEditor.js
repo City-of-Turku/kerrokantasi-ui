@@ -144,6 +144,7 @@ class HearingEditor extends React.Component {
    */
   validateHearing = (hearing, callbackAction) => {
     const {dispatch, hearingLanguages, intl: {formatMessage}} = this.props;
+    // each key corresponds to that step in the form, ie. 1 = HearingFormStep1 etc
     const localErrors = {1: {}, 4: {}, 5: {}};
 
     if (validateFunction.title(hearing.title, hearingLanguages)) {
