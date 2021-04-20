@@ -66,8 +66,6 @@ export default class Html extends React.Component {
           <meta property="og:description" content={description} />
           <meta property="og:type" content="website" />
           <meta property="og:image" content={url} />
-          <meta property="og:image:width" content="1200"/>
-          <meta property="og:image:height" content="630"/>
         </head>
         <body>
           <div id="root" dangerouslySetInnerHTML={{ __html: content || "" }}/>
