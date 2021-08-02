@@ -119,7 +119,7 @@ export class QuestionForm extends React.Component {
      * Display editable form when question is new or when the hearing is not yet public/hasn't been public.
      * Otherwise display details of existing questions
      */
-    return (question.frontId || (question.id && !isPublic))
+    return (question.frontId || (question.id && !isPublic && question.n_answers === 0))
       ? this.getEditableForm() : this.getQuestionDetails();
   }
 }
