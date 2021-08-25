@@ -1,35 +1,26 @@
-// eslint-disable-next-line import/no-unresolved
-import urls from '@city-assets/urls.json';
-
+import config from '../config';
 /**
- * Checks if cookie with the name 'CookieConsent' exists.
- * If it exists and its value is 'true' -> addCookieScript() is called.
- * @example
- * const consentValue = document.cookie.split('; ')
- * .find(row => row.startsWith('CookieConsent')).split('=')[1];
- * if (consentValue === 'true') { addCookieScript(); }
+ * Add event listener that overrides the image served by cookiebot.
  */
-function checkCookieConsent() {
-  if (document.cookie.split('; ').find(row => row.startsWith('CookieConsent'))) {
-    const consentValue = document.cookie.split('; ').find(row => row.startsWith('CookieConsent')).split('=')[1];
-    if (consentValue === 'true') {
-      addCookieScript();
-    }
+export function cookieBotAddListener() {
+  if (config.enableCookies) {
+    window.addEventListener('CookiebotOnDialogDisplay', cookieBotImageOverride);
   }
 }
 
 /**
- * Creates new script element with src from urls.analytics.
- *
- * Checks if a script element with that src already exists, if not then the element is appended to <head> .
+ * Remove event listener that overrides the image served by cookiebot.
  */
-function addCookieScript() {
-  const scriptElements = Object.values(document.getElementsByTagName('head')[0].getElementsByTagName('script'));
-  if (!scriptElements.find(element => element.src.includes(urls.analytics))) {
-    const cookieScript = document.createElement('script');
-    cookieScript.type = 'text/javascript';
-    cookieScript.src = `${urls.analytics}`;
-    document.getElementsByTagName('head')[0].appendChild(cookieScript);
+export function cookieBotRemoveListener() {
+  if (config.enableCookies) {
+    window.removeEventListener('CookiebotOnDialogDisplay', cookieBotImageOverride);
   }
 }
-export { checkCookieConsent, addCookieScript };
+
+/**
+ * Sets the cookiebot banner's header <img> src to empty string,
+ * so the image specified by the style rules is shown instead.
+ */
+export function cookieBotImageOverride() {
+  document.getElementById('CybotCookiebotDialogPoweredbyImage').src = '';
+}

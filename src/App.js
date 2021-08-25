@@ -13,8 +13,9 @@ import {withRouter} from 'react-router-dom';
 import {ToastContainer} from 'react-toastify';
 import {checkHeadlessParam} from './utils/urlQuery';
 import classNames from 'classnames';
-import CookieBar from './components/cookieBar/CookieBar';
-import {checkCookieConsent} from "./utils/cookieUtils";
+import {cookieBotAddListener, cookieBotRemoveListener} from './utils/cookieUtils';
+// eslint-disable-next-line import/no-unresolved
+import urls from '@city-assets/urls.json';
 
 class App extends React.Component {
   getChildContext() {
@@ -31,7 +32,37 @@ class App extends React.Component {
 
   componentDidMount() {
     config.activeLanguage = this.props.language; // for non react-intl localizations
-    checkCookieConsent();
+    cookieBotAddListener();
+  }
+
+  componentWillUnmount() {
+    cookieBotRemoveListener();
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  getConsentScripts() {
+    return (
+      // eslint-disable-next-line react/self-closing-comp
+      <script
+        data-blockingmode="auto"
+        data-cbid="92860cd1-d931-4496-8621-2adb011dafb0"
+        id="Cookiebot"
+        src="https://consent.cookiebot.com/uc.js"
+        type="text/javascript"
+      >
+      </script>
+    );
+  }
+  // eslint-disable-next-line class-methods-use-this
+  getAnalytics() {
+    return (
+      // eslint-disable-next-line react/self-closing-comp
+      <script
+        type="text/javascript"
+        src={urls.analytics}
+      >
+      </script>
+    );
   }
   render() {
     const locale = this.props.language;
@@ -62,7 +93,6 @@ class App extends React.Component {
     return (
       <IntlProvider locale={locale} messages={messages[locale] || {}}>
         <div className={contrastClass}>
-          {config.showCookiebar && <CookieBar />}
           <a href="#main-container" className="skip-to-main-content">
             <FormattedMessage id="skipToMainContent" />
           </a>
@@ -72,6 +102,8 @@ class App extends React.Component {
             meta={favmeta}
           >
             <html lang={locale} />
+            {config.enableCookies && this.getConsentScripts()}
+            {config.enableCookies && this.getAnalytics()}
           </Helmet>
           {header}
           <main
