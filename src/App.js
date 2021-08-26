@@ -13,9 +13,7 @@ import {withRouter} from 'react-router-dom';
 import {ToastContainer} from 'react-toastify';
 import {checkHeadlessParam} from './utils/urlQuery';
 import classNames from 'classnames';
-import {cookieBotAddListener, cookieBotRemoveListener} from './utils/cookieUtils';
-// eslint-disable-next-line import/no-unresolved
-import urls from '@city-assets/urls.json';
+import cookieUtil from './utils/cookieUtils';
 
 class App extends React.Component {
   getChildContext() {
@@ -32,38 +30,13 @@ class App extends React.Component {
 
   componentDidMount() {
     config.activeLanguage = this.props.language; // for non react-intl localizations
-    cookieBotAddListener();
+    cookieUtil.cookieBotAddListener();
   }
 
   componentWillUnmount() {
-    cookieBotRemoveListener();
+    cookieUtil.cookieBotRemoveListener();
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  getConsentScripts() {
-    return (
-      // eslint-disable-next-line react/self-closing-comp
-      <script
-        data-blockingmode="auto"
-        data-cbid="92860cd1-d931-4496-8621-2adb011dafb0"
-        id="Cookiebot"
-        src="https://consent.cookiebot.com/uc.js"
-        type="text/javascript"
-      >
-      </script>
-    );
-  }
-  // eslint-disable-next-line class-methods-use-this
-  getAnalytics() {
-    return (
-      // eslint-disable-next-line react/self-closing-comp
-      <script
-        type="text/javascript"
-        src={urls.analytics}
-      >
-      </script>
-    );
-  }
   render() {
     const locale = this.props.language;
     const contrastClass = classNames({'high-contrast': this.props.isHighContrast});
@@ -102,8 +75,8 @@ class App extends React.Component {
             meta={favmeta}
           >
             <html lang={locale} />
-            {config.enableCookies && this.getConsentScripts()}
-            {config.enableCookies && this.getAnalytics()}
+            {config.enableCookies && cookieUtil.getConsentScripts()}
+            {config.enableCookies && cookieUtil.getCookieScripts()}
           </Helmet>
           {header}
           <main
