@@ -77,34 +77,34 @@ describe('UserComment', () => {
         expect(creationDateElement.prop('value')).toBe(defaultCommentData.created_at);
       });
     });
-    describe('elements inside div.hearing-comment-status', () => {
-      const expectedConfig = {
-        styleOpen: 'success',
-        styleClosed: 'default',
-        idOpen: 'openHearing',
-        idClosed: 'closedHearing'
-      };
-      test('Label with correct props and children when hearing is closed', () => {
-        const commentValues = {closed: true, slug: 'closedHearingSlug'};
-        const wrapper = getWrapper({comment: mockComment(commentValues)});
+    describe('div.hearing-comment-status', () => {
+      const commentProps = [
+        {comment: {closed: false, slug: 'openHearingSlug'}, style: 'success', id: 'openHearing'},
+        {comment: {closed: true, slug: 'closedHearingSlug'}, style: 'default', id: 'closedHearing'},
+      ];
+      test('Icon and FormattedMessage components with correct props based on if hearing is open or not', () => {
+        commentProps.forEach((prop) => {
+          const wrapper = getWrapper({comment: mockComment(prop.comment)});
+          // div.hearing-comment-status
+          const containerElement = wrapper.find('.hearing-comment-status');
+          expect(containerElement).toHaveLength(1);
 
-        // div.hearing-comment-status
-        const containerElement = wrapper.find('.hearing-comment-status');
+          // Label
+          const labelElement = containerElement.find(Label);
+          expect(labelElement).toHaveLength(1);
+          expect(labelElement.prop('bsStyle')).toEqual(prop.style);
 
-        // <Label ... />
-        const labelElement = containerElement.find(Label);
-        expect(labelElement).toHaveLength(1);
-        expect(labelElement.prop('bsStyle')).toEqual(expectedConfig.styleClosed);
+          // FormattedMessage components
+          const messageElement = labelElement.find(FormattedMessage);
+          expect(messageElement).toHaveLength(2);
+          expect(messageElement.at(0).prop('id')).toBe('commentHearingStatus');
+          expect(messageElement.at(1).prop('id')).toBe(prop.id);
 
-        // <FormattedMessage ... />
-        const messageElement = labelElement.find(FormattedMessage);
-        expect(messageElement).toHaveLength(1);
-        expect(messageElement.prop('id')).toBe(expectedConfig.idClosed);
-
-        // <Link ... />
-        const linkElement = containerElement.find(Link);
-        expect(linkElement).toHaveLength(1);
-        expect(linkElement.prop('to')).toEqual({"path": `/${commentValues.slug}`});
+          // Link
+          const linkElement = containerElement.find(Link);
+          expect(linkElement).toHaveLength(1);
+          expect(linkElement.prop('to')).toEqual({"path": `/${prop.comment.slug}`});
+        });
       });
     });
     describe('hearing comment body', () => {

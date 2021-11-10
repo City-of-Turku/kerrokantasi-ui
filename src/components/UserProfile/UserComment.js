@@ -50,7 +50,7 @@ class UserComment extends React.Component {
   render() {
     const {comment, locale} = this.props;
     const {hearing_data: data} = comment;
-    const labelConf = {
+    const hearingStatus = {
       style: data.closed ? 'default' : 'success',
       id: data.closed ? 'closedHearing' : 'openHearing'
     };
@@ -71,8 +71,11 @@ class UserComment extends React.Component {
             </div>
             <div className="hearing-comment-status">
               <div>
-                <Label bsStyle={labelConf.style}>
-                  <FormattedMessage id={labelConf.id}>{txt => txt}</FormattedMessage>
+                <Label bsStyle={hearingStatus.style}>
+                  <FormattedMessage id="commentHearingStatus">
+                    {txt => <span className="sr-only">{txt}</span> }
+                  </FormattedMessage>
+                  <FormattedMessage id={hearingStatus.id}>{txt => txt}</FormattedMessage>
                 </Label>
               </div>
               <Link to={{path: `/${data.slug}`}}>

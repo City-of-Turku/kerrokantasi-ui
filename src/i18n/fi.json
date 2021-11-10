@@ -31,6 +31,7 @@
   "commentConditions": "Annetut kommentit julkaistaan {linkToDefinition} palvelussa {linkToLicense}. Tekstejä voidaan muokata loukkaavan tai muutoin törkeän kielenkäytön osalta.",
   "commentDeleted": "Kommentti on poistettu.",
   "commentEdited": "Kommenttia on muokattu. Kiitos!",
+  "commentHearingStatus": "Kuulemisen tila: ",
   "commentImageAlt": "Kommentoijan lisäämä kuva",
   "commentMapAdditionalInfo": "Lisätietoja karttaan liittyen (esim. osoite)",
   "commentMapTitle": "Merkitse ehdotuksesi kartalle",
