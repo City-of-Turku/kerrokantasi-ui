@@ -98,12 +98,11 @@ const HearingCard = ({
               onClick={() => unFavoriteAction(hearing.slug, hearing.id)}
               title={favoriteButtonText}
             >
-              <Icon name="heart" />
-              <FormattedMessage id="removeFavorites">{txt => <span className="sr-only">{txt}</span> }</FormattedMessage>
+              <Icon name="heart" aria-hidden="true" />
             </button>
           </div>
         )}
-        {!translationAvailable && (
+        {(!translationAvailable && !userProfile) && (
           <div className="hearing-card-notice">
             <Icon name="exclamation-circle" aria-hidden="true" />
             <FormattedMessage id="hearingTranslationNotAvailable" />

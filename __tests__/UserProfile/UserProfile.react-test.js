@@ -7,6 +7,7 @@ import HearingCardList from '../../src/components/HearingCardList';
 import {ControlLabel, FormControl, FormGroup} from 'react-bootstrap';
 import {FormattedMessage} from 'react-intl';
 import LoadSpinner from '../../src/components/LoadSpinner';
+import Icon from '../../src/utils/Icon';
 
 const createUniqueHearing = (id, slug, title, count, closed, ...props) => ({
   "id": id,
@@ -148,7 +149,7 @@ describe('UserProfile', () => {
           jest.clearAllMocks();
           instance.componentDidMount();
           const spy = jest.spyOn(instance, 'setCommentCount');
-          wrapper.setProps({profile: {comments: mockComments}});
+          wrapper.setProps({profile: {comments: mockComments, favoriteHearings: defaultProps.profile.favoriteHearings}});
           expect(spy).toHaveBeenCalledTimes(1);
           expect(spy).toHaveBeenCalledWith(mockComments.count);
         });
@@ -192,21 +193,6 @@ describe('UserProfile', () => {
       });
     });
     describe('getUserComments', () => {
-      test('return empty array when !comments.results', () => {
-        const wrapper = getWrapper({profile:
-            {
-              comments: {uniqueHearings: []},
-              favoriteHearings: {
-                count: 2,
-                results: [
-                  {id: 'firstFavoriteHearing'},
-                  {id: 'secondFavoriteHearing'}
-                ]
-              }}});
-        expect(wrapper.instance().getUserComments()).toEqual([]);
-        wrapper.setProps({profile: defaultProps.profile});
-        expect(wrapper.instance().getUserComments()).not.toEqual([]);
-      });
       test('returns UserComments for all comments by default (same when all is selected)', () => {
         const {count, results: comments} = defaultProps.profile.comments;
         const wrapper = getWrapper();
@@ -239,19 +225,6 @@ describe('UserProfile', () => {
       });
     });
     describe('getHearingCards', () => {
-      test('returns empty array if !user or !user.favorite_hearings or !profile.favoriteHearings', () => {
-        let wrapper = getWrapper({user: undefined});
-        expect(wrapper.instance().getHearingCards()).toEqual([]);
-        wrapper = getWrapper({user: {id: 'foo'}});
-        expect(wrapper.instance().getHearingCards()).toEqual([]);
-        wrapper = getWrapper({profile:
-            {
-              comments: defaultProps.profile.comments,
-              favoriteHearings: null
-            }
-        });
-        expect(wrapper.instance().getHearingCards()).toEqual([]);
-      });
       test('returns HearingCardList with correct props', () => {
         const {profile} = defaultProps;
         const wrapper = getWrapper();
@@ -388,6 +361,62 @@ describe('UserProfile', () => {
       test('!user, user is false', () => {
         const wrapper = getWrapper({user: null});
         expect(wrapper.find(LoadSpinner)).toHaveLength(1);
+      });
+    });
+    describe('Icon with FormattedMessage when', () => {
+      test('user has no favorite hearings', () => {
+        const favHearingProps = [
+          {profile:
+              {
+                comments: defaultProps.profile.comments,
+                favoriteHearings: {}
+              }
+          },
+          {profile:
+              {
+                comments: defaultProps.profile.comments,
+                favoriteHearings: {count: 0, results: []}
+              }
+          }
+        ];
+        favHearingProps.forEach((prop) => {
+          const wrapper = getWrapper(prop);
+          const iconElement = wrapper.find(Icon);
+          expect(iconElement).toHaveLength(1);
+          expect(iconElement.prop('name')).toBe('search');
+          expect(iconElement.prop('size')).toBe('2x');
+          const messageElement = wrapper.find(FormattedMessage)
+            .filterWhere(option => option.prop('id') === 'noFavoriteHearings');
+          expect(messageElement).toHaveLength(1);
+          expect(messageElement.prop('id')).toBe('noFavoriteHearings');
+        });
+      });
+      test('user has no comments', () => {
+        const commentProps = [
+          {profile:
+              {
+                comments: {},
+                favoriteHearings: defaultProps.profile.favoriteHearings
+              }
+          },
+          {profile:
+              {
+                comments: {...defaultProps.profile.comments, results: []},
+                favoriteHearings: defaultProps.profile.favoriteHearings
+              }
+          }
+        ];
+        commentProps.forEach((prop) => {
+          const wrapper = getWrapper(prop);
+          const iconElement = wrapper.find(Icon);
+          expect(iconElement).toHaveLength(1);
+          expect(iconElement.prop('name')).toBe('search');
+          expect(iconElement.prop('size')).toBe('2x');
+          const messageElement = wrapper.find(FormattedMessage)
+            .filterWhere(option => option.prop('id') === 'noAddedComments');
+          expect(messageElement).toHaveLength(1);
+          expect(messageElement.prop('id')).toBe('noAddedComments');
+        });
       });
     });
     describe('main FormattedMessage components', () => {

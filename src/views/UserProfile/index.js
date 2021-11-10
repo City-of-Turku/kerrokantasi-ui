@@ -10,6 +10,7 @@ import {ControlLabel, FormControl, FormGroup} from 'react-bootstrap';
 import UserComment from '../../components/UserProfile/UserComment';
 import getAttr from '../../utils/getAttr';
 import getMessage from '../../utils/getMessage';
+import Icon from '../../utils/Icon';
 import LoadSpinner from '../../components/LoadSpinner';
 
 
@@ -77,7 +78,7 @@ class UserProfile extends React.Component {
   getUserComments() {
     const {profile: { comments }, intl: {locale}} = this.props;
     const {selectedHearing} = this.state;
-    if (!comments || !comments.results) { return []; }
+
     return (
       <div className="row">
         <div className="commentlist">
@@ -102,9 +103,7 @@ class UserProfile extends React.Component {
    * @returns {JSX.Element|*[]}
    */
   getHearingCards() {
-    const {user, intl, profile: { favoriteHearings}} = this.props;
-
-    if (!user || !user.favorite_hearings || !favoriteHearings) { return []; }
+    const {intl, profile: { favoriteHearings}} = this.props;
 
     return (
       <HearingCardList
@@ -205,44 +204,63 @@ class UserProfile extends React.Component {
     );
   }
 
+  /**
+   * Used to display an icon and text informing user that certain content was not found.
+   * @param {string} messageID - passed to FormattedMessage
+   * @returns {JSX.Element}
+   */
+  getContentNotFound(messageID) { // eslint-disable-line class-methods-use-this
+    return (
+      <div className="content-not-found">
+        <Icon name="search" size="2x" aria-hidden/>
+        <FormattedMessage id={messageID}>{txt => <p>{txt}</p>}</FormattedMessage>
+      </div>
+    );
+  }
+
   render() {
-    const {userState: {userLoading}, user} = this.props;
+    const {userState: {userLoading}, user, intl, profile: {favoriteHearings, comments}} = this.props;
+
     if (userLoading || !user) {
       return (<LoadSpinner />);
     }
     const {commentCount} = this.state;
+    // True when favorites have been fetched and results array has content.
+    const hearingsLoaded = Object.keys(favoriteHearings).length > 0 && favoriteHearings.results.length !== 0;
+    // True when comments have been fetched and results array has content.
+    const commentsLoaded = Object.keys(comments).includes('results') && comments.results.length !== 0;
     return (
       <div className="container user-profile">
-        <Helmet title="user activity" />
+        <Helmet title={intl.formatMessage({id: 'userInfo'})} />
         <div className="row">
           <FormattedMessage id="userInfo">
             {txt => <h1>{txt}</h1>}
           </FormattedMessage>
+          <FormattedMessage id="favoriteHearings">
+            {txt => <h2>{txt}</h2>}
+          </FormattedMessage>
         </div>
-        <FormattedMessage id="favoriteHearings">
-          {txt => <h2>{txt}</h2>}
-        </FormattedMessage>
         <div className="row">
           <div className="col-md-12">
-            {this.getHearingCards()}
+            { hearingsLoaded ? this.getHearingCards() : this.getContentNotFound('noFavoriteHearings')}
           </div>
         </div>
         <div className="row">
+          <FormattedMessage id="userAddedComments" values={{n: commentCount}}>
+            {txt => <h2>{txt}</h2>}
+          </FormattedMessage>
           <div className="col-md-12">
-            <div className="user-comments-wrapper">
-              <div className="row">
-                <div className="col-md-8">
-                  <FormattedMessage id="userAddedComments" values={{n: commentCount}}>
-                    {txt => <h2>{txt}</h2>}
-                  </FormattedMessage>
+            {commentsLoaded ?
+              <div className="user-comments-wrapper">
+                <div className="row">
+                  {this.hearingCommentSelect()}
+                  {this.getCommentOrderSelect()}
                 </div>
+                {this.getUserComments()}
               </div>
-              <div className="row">
-                {this.hearingCommentSelect()}
-                {this.getCommentOrderSelect()}
-              </div>
-              {this.getUserComments()}
-            </div>
+              :
+              this.getContentNotFound('noAddedComments')
+            }
           </div>
         </div>
       </div>

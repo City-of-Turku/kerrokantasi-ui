@@ -80,7 +80,7 @@ describe('UserComment', () => {
     describe('elements inside div.hearing-comment-status', () => {
       const expectedConfig = {
         styleOpen: 'success',
-        styleClosed: 'danger',
+        styleClosed: 'default',
         idOpen: 'openHearing',
         idClosed: 'closedHearing'
       };

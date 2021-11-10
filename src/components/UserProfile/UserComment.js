@@ -7,6 +7,8 @@ import Icon from '../../utils/Icon';
 import {FormattedMessage, FormattedRelative} from 'react-intl';
 import Link from '../LinkWithLang';
 import HearingMap from '../Hearing/HearingMap';
+import getMessage from '../../utils/getMessage';
+import getAttr from '../../utils/getAttr';
 
 
 class UserComment extends React.Component {
@@ -46,10 +48,10 @@ class UserComment extends React.Component {
     this.setState({displayMap: !this.state.displayMap});
   }
   render() {
-    const {comment} = this.props;
+    const {comment, locale} = this.props;
     const {hearing_data: data} = comment;
     const labelConf = {
-      style: data.closed ? 'danger' : 'success',
+      style: data.closed ? 'default' : 'success',
       id: data.closed ? 'closedHearing' : 'openHearing'
     };
     return (
@@ -68,18 +70,38 @@ class UserComment extends React.Component {
               </OverlayTrigger>
             </div>
             <div className="hearing-comment-status">
-              <Label
-                bsStyle={labelConf.style}
-              >
-                <FormattedMessage id={labelConf.id}>{txt => txt}</FormattedMessage>
-              </Label>
+              <div>
+                <Label bsStyle={labelConf.style}>
+                  <FormattedMessage id={labelConf.id}>{txt => txt}</FormattedMessage>
+                </Label>
+              </div>
               <Link to={{path: `/${data.slug}`}}>
-                {data.slug}
+                {getAttr(data.title, locale)}
               </Link>
             </div>
           </div>
           <div className="hearing-comment-body">
             <p>{nl2br(comment.content)}</p>
+          </div>
+          <div className="hearing-comment__images">
+            {comment.images
+              ? comment.images.map((image) =>
+                <a
+                  className="hearing-comment-images-image"
+                  key={image.url}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  href={image.url}
+                >
+                  <img
+                    alt={getMessage('commentImageAlt')}
+                    src={image.url}
+                    width={image.width < 100 ? image.width : 100}
+                    height={image.height < 100 ? image.height : 100}
+                  />
+                </a>
+              )
+              : null}
           </div>
           {comment.geojson && (
             <div className="hearing-comment__map">
@@ -116,6 +138,7 @@ class UserComment extends React.Component {
 
 UserComment.propTypes = {
   comment: PropTypes.object,
+  locale: PropTypes.string,
 };
 
 export default UserComment;

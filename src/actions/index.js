@@ -196,6 +196,12 @@ export function fetchFavoriteHearings(params) {
   };
 }
 
+/**
+ * Post to add hearing to favorites
+ * @param {string} hearingSlug
+ * @param {string} hearingId
+ * @returns {function(*, *): *}
+ */
 export function addHearingToFavorites(hearingSlug, hearingId) {
   return (dispatch, getState) => {
     const fetchAction = createAction("beginAddHearingToFavorites")({hearingSlug});
@@ -214,6 +220,12 @@ export function addHearingToFavorites(hearingSlug, hearingId) {
   };
 }
 
+/**
+ * Post to remove hearing from favorites
+ * @param {string} hearingSlug
+ * @param {string} hearingId
+ * @returns {function(*, *): *}
+ */
 export function removeHearingFromFavorites(hearingSlug, hearingId) {
   return (dispatch, getState) => {
     const fetchAction = createAction("beginRemoveHearingFromFavorites")({hearingSlug});
