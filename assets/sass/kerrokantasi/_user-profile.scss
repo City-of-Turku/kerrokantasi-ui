@@ -1,9 +1,15 @@
 .user-profile {
+  h1, h2 {
+    padding: 0 15px;
+  }
   .content-not-found {
     text-align: center;
   }
   .commentlist {
     max-height: 600px;
+    @media screen and (min-width: $screen-md-min) {
+      max-height: 900px;
+    }
     overflow-y: scroll;
     background-color: #e9ecef;
     padding: 24px;
@@ -12,7 +18,10 @@
     .hearing-comment-status {
       div > span {
         width: fit-content;
-        float: right;
+        float: left;
+        @media screen and (min-width: $screen-sm-min) {
+          float: right;
+        }
       }
       a {
         overflow: hidden;
