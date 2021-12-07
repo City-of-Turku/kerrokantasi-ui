@@ -9,6 +9,7 @@ import Button from 'react-bootstrap/lib/Button';
 import Modal from 'react-bootstrap/lib/Modal';
 import Panel from 'react-bootstrap/lib/Panel';
 import Icon from '../../utils/Icon';
+import {Collapse} from 'react-collapse';
 
 import config from '../../config';
 
@@ -61,6 +62,7 @@ class HearingForm extends React.Component {
       onDeleteTemporaryQuestion,
       errors
     } = this.props;
+
     const step = stepNumber.toString();
     let title = formatMessage({id: 'hearingFormHeaderStep' + step});
     const stepErrors = errors[stepNumber] || {};
@@ -72,7 +74,7 @@ class HearingForm extends React.Component {
     return (
       <Panel eventKey={step}>
         <Panel.Heading>
-          <Panel.Title toggle>
+          <Panel.Title onClick={() => this.setCurrentStep(step)}>
             {title}
           </Panel.Title>
         </Panel.Heading>

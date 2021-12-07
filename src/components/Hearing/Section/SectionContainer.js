@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 import React from 'react';
 import AnchorLink from 'react-anchor-link-smooth-scroll';
 import get from 'lodash/get';
@@ -481,7 +482,13 @@ export class SectionContainerComponent extends React.Component {
     if (isEmpty(section.content)) {
       return null;
     }
-    return <div dangerouslySetInnerHTML={{ __html: getAttr(section.content, language) }} />;
+    return <div
+      dangerouslySetInnerHTML={
+        {
+          __html: getAttr(section.content[language], language)
+        }
+      }
+    />;
   }
 
   renderSectionAbstract = (section, language) => {
