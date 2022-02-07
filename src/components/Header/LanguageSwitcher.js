@@ -64,7 +64,9 @@ class LanguageSwitcher extends React.Component {
       <li key={code} className={classNames({active: code === currentLanguage})}>
         <a
           href="#"
+          aria-current={code === currentLanguage}
           aria-label={getMessage(`lang-${code}`)}
+          lang={code}
           onClick={(event) => {
             event.preventDefault();
             this.changeLanguage(history, location, code);
@@ -78,17 +80,30 @@ class LanguageSwitcher extends React.Component {
 
   render() {
     const {currentLanguage, history, location} = this.props;
+    const {openDropdown} = this.state;
     return (
-      // eslint-disable-next-line no-return-assign
-      <div className={classNames('dropdown', {open: this.state.openDropdown}, 'btn-group')} ref={node => this.node = node} >
-        <Button className="language-switcher" onClick={() => this.toggleDropdown()} aria-label={getMessage('languageSwitchLabel')} id="language">
-          <span>
+      <div
+        className={classNames('dropdown', {open: openDropdown}, 'btn-group')}
+        // eslint-disable-next-line no-return-assign
+        ref={node => this.node = node}
+      >
+        <Button
+          aria-expanded={openDropdown}
+          aria-haspopup
+          className="language-switcher"
+          id="language"
+          onClick={() => this.toggleDropdown()}
+        >
+          <span aria-hidden="true">
             <Icon name="globe" className="user-nav-icon" aria-hidden="true" />
             {currentLanguage}
             <span className="caret" />
           </span>
+          <span className="sr-only" lang="fi">Valitse kieli,</span>
+          <span className="sr-only" lang="sv">Ändra språk,</span>
+          <span className="sr-only" lang="en">Change language</span>
         </Button>
-        <ul className={classNames('dropdown-menu dropdown-menu-right')} aria-labelledby="language">
+        <ul className={classNames('dropdown-menu dropdown-menu-right')}>
           { config.languages
             .map((code) =>
               this.getMenuItem(history, location, code)
