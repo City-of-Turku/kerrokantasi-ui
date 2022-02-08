@@ -81,6 +81,7 @@ class LanguageSwitcher extends React.Component {
   render() {
     const {currentLanguage, history, location} = this.props;
     const {openDropdown} = this.state;
+    const {languages} = config;
     return (
       <div
         className={classNames('dropdown', {open: openDropdown}, 'btn-group')}
@@ -99,16 +100,16 @@ class LanguageSwitcher extends React.Component {
             {currentLanguage}
             <span className="caret" />
           </span>
-          <span className="sr-only" lang="fi">Valitse kieli,</span>
-          <span className="sr-only" lang="sv">Ändra språk,</span>
-          <span className="sr-only" lang="en">Change language</span>
+          { languages.map((code, index) =>
+            <span className="sr-only" key={`${code}-key`} lang={code}>
+              {`${getMessage('languageSwitchLabel', code)}${index + 1 < languages.length ? "," : ""}`}
+            </span>
+          )}
         </Button>
         <ul className={classNames('dropdown-menu dropdown-menu-right')}>
-          { config.languages
-            .map((code) =>
-              this.getMenuItem(history, location, code)
-            )
-          }
+          { languages.map((code) =>
+            this.getMenuItem(history, location, code)
+          )}
         </ul>
       </div>
     );
