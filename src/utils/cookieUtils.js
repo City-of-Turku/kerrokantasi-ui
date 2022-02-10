@@ -10,9 +10,8 @@ import urls from '@city-assets/urls.json';
 export function getCookieScripts() {
   return (
     <script
-      type="text/plain"
+      type="text/javascript"
       src={urls.analytics}
-      data-cookieconsent="statistics"
     >
     </script>
   );

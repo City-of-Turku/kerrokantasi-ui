@@ -4,9 +4,13 @@ import {
   cookieBotRemoveListener,
   cookieBotImageOverride,
   getConsentScripts,
+  getCookieScripts,
 } from '../../src/utils/cookiebotUtils';
 import config from '../../src/config';
 import {shallow} from 'enzyme';
+
+// eslint-disable-next-line import/no-unresolved
+import urls from '@city-assets/urls.json';
 
 jest.mock('../../src/config', () => {
   return {
@@ -74,6 +78,16 @@ describe('cookiebotUtils', () => {
       expect(wrapper.find('script').prop('data-cbid')).toBe(config.cookiebotDataCbid);
       expect(wrapper.find('script').prop('src')).toBe('https://consent.cookiebot.com/uc.js');
       expect(wrapper.find('script').prop('type')).toBe('text/javascript');
+    });
+  });
+  describe('getCookieScripts', () => {
+    test('returns a script element', () => {
+      const element = getCookieScripts();
+      const wrapper = shallow(<div>{element}</div>);
+      expect(wrapper.find('script')).toHaveLength(1);
+      expect(wrapper.find('script').prop('data-cookieconsent')).toEqual('statistics');
+      expect(wrapper.find('script').prop('src')).toEqual(urls.analytics);
+      expect(wrapper.find('script').prop('type')).toEqual('text/plain');
     });
   });
 });

@@ -67,6 +67,16 @@ class App extends React.Component {
     }
     const mainContainerId = "main-container";
     const skipTo = `${this.props.location.pathname}${this.props.location.search}#${mainContainerId}`;
+    const useCookiebot = config.enableCookies && config.enableCookiebot;
+    const getCookieScripts = () => {
+      if (useCookiebot) {
+        return cookiebotUtils.getCookieScripts();
+      } else if (config.enableCookies) {
+        return cookieUtil.getCookieScripts();
+      }
+      return null;
+    };
+
     return (
       <IntlProvider locale={locale} messages={messages[locale] || {}}>
         <div className={contrastClass}>
@@ -79,8 +89,8 @@ class App extends React.Component {
             meta={favmeta}
           >
             <html lang={locale} />
-            {(config.enableCookies && config.enableCookiebot) && cookiebotUtils.getConsentScripts()}
-            {config.enableCookies && cookieUtil.getCookieScripts()}
+            {useCookiebot && cookiebotUtils.getConsentScripts()}
+            {getCookieScripts()}
           </Helmet>
           {header}
           <main

@@ -1,6 +1,8 @@
 /* eslint-disable react/self-closing-comp */
 import config from '../config';
 import React from 'react';
+// eslint-disable-next-line import/no-unresolved
+import urls from '@city-assets/urls.json';
 
 /**
  * Add event listener that overrides the image served by cookiebot.
@@ -45,9 +47,25 @@ export function getConsentScripts() {
   );
 }
 
+/**
+ * Returns a <script> element with src urls.analytics
+ * @returns {JSX.Element}
+ */
+export function getCookieScripts() {
+  return (
+    <script
+      data-cookieconsent="statistics"
+      src={urls.analytics}
+      type="text/plain"
+    >
+    </script>
+  );
+}
+
 export default {
   cookieBotAddListener,
   cookieBotRemoveListener,
   cookieBotImageOverride,
   getConsentScripts,
+  getCookieScripts,
 };

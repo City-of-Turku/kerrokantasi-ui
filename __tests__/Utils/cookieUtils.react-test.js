@@ -18,6 +18,7 @@ describe('cookieUtils', () => {
       const wrapper = shallow(<div>{element}</div>);
       expect(wrapper.find('script')).toHaveLength(1);
       expect(wrapper.find('script').prop('src')).toEqual(urls.analytics);
+      expect(wrapper.find('script').prop('type')).toEqual('text/javascript');
     });
   });
 });
