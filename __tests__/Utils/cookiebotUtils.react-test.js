@@ -5,6 +5,7 @@ import {
   cookieBotImageOverride,
   getConsentScripts,
   getCookieScripts,
+  isCookiebotEnabled,
 } from '../../src/utils/cookiebotUtils';
 import config from '../../src/config';
 import {shallow} from 'enzyme';
@@ -88,6 +89,30 @@ describe('cookiebotUtils', () => {
       expect(wrapper.find('script').prop('data-cookieconsent')).toEqual('statistics');
       expect(wrapper.find('script').prop('src')).toEqual(urls.analytics);
       expect(wrapper.find('script').prop('type')).toEqual('text/plain');
+    });
+  });
+
+  describe('isCookiebotEnabled', () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    test('returns true when both cookies and Cookiebot are enabled', () => {
+      config.enableCookies = true;
+      config.enableCookiebot = true;
+      expect(isCookiebotEnabled()).toBe(true);
+    });
+
+    test('returns false when cookies are not enabled', () => {
+      config.enableCookies = false;
+      config.enableCookiebot = true;
+      expect(isCookiebotEnabled()).toBe(false);
+    });
+
+    test('returns false when Cookiebot is not enabled', () => {
+      config.enableCookies = true;
+      config.enableCookiebot = false;
+      expect(isCookiebotEnabled()).toBe(false);
     });
   });
 });

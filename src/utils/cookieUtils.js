@@ -2,12 +2,14 @@
 import React from 'react';
 // eslint-disable-next-line import/no-unresolved
 import urls from '@city-assets/urls.json';
+import cookiebotUtils from './cookiebotUtils';
+import config from '../config';
 
 /**
- * Returns a <script> element with src urls.analytics
- * @returns {JSX.Element}
+ * Returns a default cookie script element with src urls.analytics
+ * @returns {JSX.Element} script element
  */
-export function getCookieScripts() {
+export function getDefaultCookieScripts() {
   return (
     <script
       type="text/javascript"
@@ -17,6 +19,21 @@ export function getCookieScripts() {
   );
 }
 
+/**
+ * Returns a script element based on config settings with src urls.analytics
+ * or null when cookies are not enabled.
+ * @returns {JSX.Element|null} script element or null
+ */
+export function getCookieScripts() {
+  if (cookiebotUtils.isCookiebotEnabled()) {
+    return cookiebotUtils.getCookieScripts();
+  } else if (config.enableCookies) {
+    return getDefaultCookieScripts();
+  }
+  return null;
+}
+
 export default {
-  getCookieScripts
+  getDefaultCookieScripts,
+  getCookieScripts,
 };

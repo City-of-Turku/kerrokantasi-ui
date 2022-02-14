@@ -23,7 +23,7 @@ export function cookieBotRemoveListener() {
 }
 
 /**
- * Sets the cookiebot banner's header <img> src to empty string,
+ * Sets the cookiebot banner's header img src to empty string,
  * so the image specified by the style rules is shown instead.
  */
 export function cookieBotImageOverride() {
@@ -31,8 +31,8 @@ export function cookieBotImageOverride() {
 }
 
 /**
- * Returns the Cookiebot <script> element
- * @returns {JSX.Element}
+ * Returns the Cookiebot script element
+ * @returns {JSX.Element} script element
  */
 export function getConsentScripts() {
   return (
@@ -48,8 +48,8 @@ export function getConsentScripts() {
 }
 
 /**
- * Returns a <script> element with src urls.analytics
- * @returns {JSX.Element}
+ * Returns a script element with src urls.analytics
+ * @returns {JSX.Element} script element
  */
 export function getCookieScripts() {
   return (
@@ -62,10 +62,19 @@ export function getCookieScripts() {
   );
 }
 
+/**
+ * Returns whether Cookiebot is enabled and should be used or not.
+ * @returns {boolean} true when Cookiebot is enabled, else false if not.
+ */
+export function isCookiebotEnabled() {
+  return config.enableCookies && config.enableCookiebot;
+}
+
 export default {
   cookieBotAddListener,
   cookieBotRemoveListener,
   cookieBotImageOverride,
   getConsentScripts,
   getCookieScripts,
+  isCookiebotEnabled,
 };
