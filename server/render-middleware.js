@@ -42,7 +42,6 @@ function renderHTMLSkeleton(req, res, settings) {
         showSocialMediaSharing={settings.show_social_media_sharing}
         enableCookies={settings.enable_cookies}
         enableCookiebot={settings.enable_cookiebot}
-        cookiebotDataBlockingmode={settings.cookiebot_data_blockingmode}
         cookiebotDataCbid={settings.cookiebot_data_cbid}
         openIdClientId={settings.openid_client_id}
         openIdAudience={settings.openid_audience}

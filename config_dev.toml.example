@@ -68,7 +68,6 @@ city_config="cities/helsinki"
 # Cookiebot consent management platform configuration. Cookiebot is disabled by default.
 # To use Cookiebot set both enable_cookies and enable_cookiebot to true.
 # enable_cookiebot=true
-# cookiebot_data_blockingmode="auto/none"
 # cookiebot_data_cbid="your-unique-cookiebot-domain-group-id"
 
 # Address for hearing admin help link

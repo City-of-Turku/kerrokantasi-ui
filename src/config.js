@@ -18,7 +18,6 @@ const config = {
   enableHighContrast: typeof window !== 'undefined' ? window.ENABLE_HIGHCONTRAST : false,
   enableCookies: typeof window !== 'undefined' ? window.ENABLE_COOKIES : false,
   enableCookiebot: typeof window !== 'undefined' ? window.ENABLE_COOKIEBOT : false,
-  cookiebotDataBlockingmode: typeof window !== 'undefined' ? window.COOKIEBOT_DATA_BLOCKINGMODE : null,
   cookiebotDataCbid: typeof window !== 'undefined' ? window.COOKIEBOT_DATA_CBID : null,
   enableStrongAuth: typeof window !== 'undefined' ? window.ENABLE_STRONG_AUTH : false,
   adminHelpUrl: typeof window !== 'undefined' ? window.ADMIN_HELP_URL : "",

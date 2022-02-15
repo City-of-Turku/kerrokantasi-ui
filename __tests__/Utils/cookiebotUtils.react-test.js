@@ -17,7 +17,6 @@ jest.mock('../../src/config', () => {
   return {
     enableCookies: true,
     enableCookiebot: true,
-    cookiebotDataBlockingmode: 'auto',
     cookiebotDataCbid: '123-abc'
   };
 });
@@ -75,7 +74,7 @@ describe('cookiebotUtils', () => {
       const wrapper = shallow(<div>{element}</div>);
       expect(wrapper.find('script')).toHaveLength(1);
       expect(wrapper.find('script').prop('id')).toBe('Cookiebot');
-      expect(wrapper.find('script').prop('data-blockingmode')).toBe(config.cookiebotDataBlockingmode);
+      expect(wrapper.find('script').prop('data-blockingmode')).toBe('auto');
       expect(wrapper.find('script').prop('data-cbid')).toBe(config.cookiebotDataCbid);
       expect(wrapper.find('script').prop('src')).toBe('https://consent.cookiebot.com/uc.js');
       expect(wrapper.find('script').prop('type')).toBe('text/javascript');

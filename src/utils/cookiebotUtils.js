@@ -37,7 +37,7 @@ export function cookieBotImageOverride() {
 export function getConsentScripts() {
   return (
     <script
-      data-blockingmode={config.cookiebotDataBlockingmode}
+      data-blockingmode="auto"
       data-cbid={config.cookiebotDataCbid}
       id="Cookiebot"
       src="https://consent.cookiebot.com/uc.js"
