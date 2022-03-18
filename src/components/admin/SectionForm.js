@@ -280,6 +280,12 @@ class SectionForm extends React.Component {
           languages={sectionLanguages}
           fieldType={TextFieldTypes.TEXTAREA}
           placeholderId="sectionAbstractPlaceholder"
+          richTextEditor
+          hideBlockStyleControls
+          hideInlineStyleControls
+          hideIframeControls
+          hideImageControls
+          hideSkipLinkControls
         />
 
         <MultiLanguageTextField

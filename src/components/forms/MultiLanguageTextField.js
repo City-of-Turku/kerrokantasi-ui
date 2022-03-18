@@ -47,6 +47,12 @@ class MultiLanguageTextField extends React.Component {
   render() {
     const {
       fieldType,
+      hideBlockStyleControls,
+      hideInlineStyleControls,
+      hideIframeControls,
+      hideImageControls,
+      hideSkipLinkControls,
+      hideLinkControls,
       languages,
       value,
       labelId,
@@ -72,6 +78,12 @@ class MultiLanguageTextField extends React.Component {
           if (richTextEditor) {
             return (
               <RichTextEditor
+                hideBlockStyleControls={hideBlockStyleControls}
+                hideInlineStyleControls={hideInlineStyleControls}
+                hideIframeControls={hideIframeControls}
+                hideImageControls={hideImageControls}
+                hideSkipLinkControls={hideSkipLinkControls}
+                hideLinkControls={hideLinkControls}
                 key={lang}
                 labelId={`inLanguage-${lang}`}
                 value={currentValue}
@@ -103,6 +115,12 @@ class MultiLanguageTextField extends React.Component {
 MultiLanguageTextField.propTypes = {
   defaultValue: PropTypes.object, // TODO: create shape! {'fi': ..., 'sv': ..., 'en': ...}
   fieldType: PropTypes.string,
+  hideBlockStyleControls: PropTypes.bool,
+  hideInlineStyleControls: PropTypes.bool,
+  hideIframeControls: PropTypes.bool,
+  hideImageControls: PropTypes.bool,
+  hideSkipLinkControls: PropTypes.bool,
+  hideLinkControls: PropTypes.bool,
   labelId: PropTypes.string,
   languages: PropTypes.arrayOf(PropTypes.string),
   onBlur: PropTypes.func,
@@ -116,7 +134,13 @@ MultiLanguageTextField.propTypes = {
 };
 
 MultiLanguageTextField.defaultProps = {
-  fieldType: TextFieldTypes.INPUT
+  fieldType: TextFieldTypes.INPUT,
+  hideBlockStyleControls: false,
+  hideInlineStyleControls: false,
+  hideIframeControls: false,
+  hideImageControls: false,
+  hideSkipLinkControls: false,
+  hideLinkControls: false,
 };
 
 export default injectIntl(MultiLanguageTextField);
