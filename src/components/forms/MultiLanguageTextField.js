@@ -107,12 +107,6 @@ MultiLanguageTextField.propTypes = {
   defaultValue: PropTypes.object, // TODO: create shape! {'fi': ..., 'sv': ..., 'en': ...}
   fieldType: PropTypes.string,
   hideControls: textEditorHideControlsShape,
-  hideBlockStyleControls: PropTypes.bool,
-  hideInlineStyleControls: PropTypes.bool,
-  hideIframeControls: PropTypes.bool,
-  hideImageControls: PropTypes.bool,
-  hideSkipLinkControls: PropTypes.bool,
-  hideLinkControls: PropTypes.bool,
   labelId: PropTypes.string,
   languages: PropTypes.arrayOf(PropTypes.string),
   onBlur: PropTypes.func,
