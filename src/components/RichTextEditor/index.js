@@ -33,6 +33,7 @@ import IframeEntity from './Iframe/IframeEntity';
 import SkipLinkModal from './SkipLink/SkipLinkModal';
 import ImageModal from './Image/ImageModal';
 import ImageEntity from './Image/ImageEntity';
+import { textEditorHideControlsShape } from '../../types';
 
 const getBlockStyle = (block) => {
   switch (block.getType()) {
@@ -585,7 +586,7 @@ class RichTextEditor extends React.Component {
       hideImageControls,
       hideSkipLinkControls,
       hideLinkControls
-    } = this.props;
+    } = this.props.hideControls;
     return (
       <div className="rich-text-editor">
         <ControlLabel>
@@ -664,21 +665,18 @@ class RichTextEditor extends React.Component {
 }
 
 RichTextEditor.defaultProps = {
-  hideBlockStyleControls: false,
-  hideInlineStyleControls: false,
-  hideIframeControls: false,
-  hideImageControls: false,
-  hideSkipLinkControls: false,
-  hideLinkControls: false,
+  hideControls: {
+    hideBlockStyleControls: false,
+    hideInlineStyleControls: false,
+    hideIframeControls: false,
+    hideImageControls: false,
+    hideSkipLinkControls: false,
+    hideLinkControls: false,
+  }
 };
 
 RichTextEditor.propTypes = {
-  hideBlockStyleControls: PropTypes.bool,
-  hideInlineStyleControls: PropTypes.bool,
-  hideIframeControls: PropTypes.bool,
-  hideImageControls: PropTypes.bool,
-  hideSkipLinkControls: PropTypes.bool,
-  hideLinkControls: PropTypes.bool,
+  hideControls: textEditorHideControlsShape,
   labelId: PropTypes.string,
   onBlur: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
