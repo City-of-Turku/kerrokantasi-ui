@@ -31,6 +31,32 @@ import config from './../../config';
 const MAX_IMAGE_SIZE = 999999;
 const MAX_FILE_SIZE = 70;
 
+/**
+ * Convert image to .webp and dispatch the .webp file if it's smaller than the original image file.
+ * @param {Blob | Object} blob used to create a new webp file.
+ * @param {File | Object} file originally uploaded file.
+ * @param {Object} section section that the image is added to.
+ * @param {Function} changeFunc dispatch function
+ * @param {Blob} initImage originally uploaded images blob.
+ */
+function webpConvert(blob, file, section, changeFunc, initImage) {
+  const canvasReader = new FileReader();
+  canvasReader.onload = () => {
+    changeFunc(section.frontId, 'image', canvasReader.result);
+  };
+  // create new webp file based on blob.
+  const webpFile = new File([blob], file.name.slice(0, 5), {
+    type: 'image/webp',
+    lastModified: Date.now(),
+  });
+  // if the webp file is smaller than the original file -> use webp file.
+  if (file.size > webpFile.size) {
+    canvasReader.readAsDataURL(webpFile);
+  } else {
+    changeFunc(section.frontId, 'image', initImage);
+  }
+}
+
 class SectionForm extends React.Component {
   constructor(props) {
     super(props);
@@ -53,10 +79,10 @@ class SectionForm extends React.Component {
   /**
    * Modify section state and propagate necessary information
    * up to the parent components.
-   * @param  {object} - OnClick event
+   * @param  {object} event OnClick event
    */
   onChange(event) {
-    // Propagate interestin changes to parent components
+    // Propagate interesting changes to parent components
     const {name: field, value} = event.target;
     const section = this.props.section;
     switch (field) {
@@ -72,17 +98,41 @@ class SectionForm extends React.Component {
   }
 
   onFileDrop(files) {
+    const {onSectionImageChange, section} = this.props;
     if (files[0].size > MAX_IMAGE_SIZE) {
       localizedNotifyError('imageSizeError');
       return;
     }
-    const section = this.props.section;
+    if (!onSectionImageChange) {
+      localizedNotifyError("imageGenericError");
+      return;
+    }
+
     const file = files[0];  // Only one file is supported for now.
     const fileReader = new FileReader();
-    fileReader.addEventListener("load", () => {
-      if (this.props.onSectionImageChange) {
-        this.props.onSectionImageChange(section.frontId, "image", fileReader.result);
-      }
+    fileReader.addEventListener('error', () => {
+      localizedNotifyError('imageFileUploadError');
+    });
+    fileReader.addEventListener("load", (event) => {
+      // New img element is created with the uploaded image.
+      const img = document.createElement('img');
+      img.src = event.target.result;
+      img.onerror = () => {
+        localizedNotifyError('imageFileUploadError');
+      };
+      img.onload = () => {
+        // Canvas element is created with content from the new img.
+        const canvasElement = document.createElement('canvas');
+        canvasElement.width = img.width;
+        canvasElement.height = img.height;
+
+        const ctx = canvasElement.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvasElement.width, canvasElement.height);
+        ctx.canvas.toBlob((blob) => {
+          // canvas image Blob is passed onward.
+          webpConvert(blob, file, section, onSectionImageChange, fileReader.result);
+        }, 'image/webp', 0.80);
+      };
     }, false);
     fileReader.readAsDataURL(file);
   }
