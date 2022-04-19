@@ -23,6 +23,7 @@ import MultiLanguageTextField, {TextFieldTypes} from '../forms/MultiLanguageText
 import {sectionShape} from '../../types';
 import {isSpecialSectionType} from '../../utils/section';
 import config from './../../config';
+import {isFirefox, isSafari, browserVersion} from 'react-device-detect';
 
 /**
  * MAX_IMAGE_SIZE given in bytes
@@ -40,13 +41,22 @@ const MAX_FILE_SIZE = 70;
  * @param {Blob} initImage originally uploaded image blob.
  */
 function webpConvert(blob, initFileSize, section, changeFunc, initImage) {
+  const isLegacyFF = isFirefox && Number.parseInt(browserVersion, 10) < 96;
+  let finalBlob = blob;
+  // FF versions < 96 & Safari don't support toBlob type image/webp so a temporary webp file is created and used.
+  if (isLegacyFF || isSafari) {
+    finalBlob = new File([blob], 'file', {
+      type: 'image/webp',
+      lastModified: Date.now(),
+    });
+  }
   // if the webp file is smaller than the original file -> use webp file.
-  if (initFileSize > blob.size) {
+  if (initFileSize > finalBlob.size) {
     const canvasReader = new FileReader();
     canvasReader.onload = () => {
       changeFunc(section.frontId, 'image', canvasReader.result);
     };
-    canvasReader.readAsDataURL(blob);
+    canvasReader.readAsDataURL(finalBlob);
   } else {
     changeFunc(section.frontId, 'image', initImage);
   }
