@@ -32,26 +32,21 @@ const MAX_IMAGE_SIZE = 999999;
 const MAX_FILE_SIZE = 70;
 
 /**
- * Convert image to .webp and dispatch the .webp file if it's smaller than the original image file.
- * @param {Blob | Object} blob used to create a new webp file.
- * @param {File | Object} file originally uploaded file.
+ * Compares given blob to initFileSize and calls changeFunc if it's smaller than the original image file.
+ * @param {Blob | Object} blob Webp Blob
+ * @param {number} initFileSize original image file size.
  * @param {Object} section section that the image is added to.
  * @param {Function} changeFunc dispatch function
- * @param {Blob} initImage originally uploaded images blob.
+ * @param {Blob} initImage originally uploaded image blob.
  */
-function webpConvert(blob, file, section, changeFunc, initImage) {
-  const canvasReader = new FileReader();
-  canvasReader.onload = () => {
-    changeFunc(section.frontId, 'image', canvasReader.result);
-  };
-  // create new webp file based on blob.
-  const webpFile = new File([blob], file.name.slice(0, 5), {
-    type: 'image/webp',
-    lastModified: Date.now(),
-  });
+function webpConvert(blob, initFileSize, section, changeFunc, initImage) {
   // if the webp file is smaller than the original file -> use webp file.
-  if (file.size > webpFile.size) {
-    canvasReader.readAsDataURL(webpFile);
+  if (initFileSize > blob.size) {
+    const canvasReader = new FileReader();
+    canvasReader.onload = () => {
+      changeFunc(section.frontId, 'image', canvasReader.result);
+    };
+    canvasReader.readAsDataURL(blob);
   } else {
     changeFunc(section.frontId, 'image', initImage);
   }
@@ -129,8 +124,8 @@ class SectionForm extends React.Component {
         const ctx = canvasElement.getContext('2d');
         ctx.drawImage(img, 0, 0, canvasElement.width, canvasElement.height);
         ctx.canvas.toBlob((blob) => {
-          // canvas image Blob is passed onward.
-          webpConvert(blob, file, section, onSectionImageChange, fileReader.result);
+          // canvas webp image Blob is passed onwards.
+          webpConvert(blob, file.size, section, onSectionImageChange, fileReader.result);
         }, 'image/webp', 0.80);
       };
     }, false);
