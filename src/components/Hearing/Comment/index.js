@@ -63,6 +63,14 @@ class Comment extends React.Component {
       )
     ) {
       this.getReplies();
+    } else if (this.state.showReplies && !this.props.jumpTo) {
+      // focus is set to the toggle element when mounting with existing/fetched replies.
+      const toggleContainer = document.getElementById(`comment-${this.props.data.id}`)
+        .querySelector('span.hearing-comment__show-more__wrapper');
+      if (toggleContainer) {
+        // finds the first anchor element and sets focus on it.
+        toggleContainer.querySelector('a').focus();
+      }
     }
   };
 
@@ -198,14 +206,6 @@ class Comment extends React.Component {
       }
       this.props.onPostReply(section.id, { ...commentData });
     }
-  }
-
-  /**
-   * Once highlight is complete.
-   * End animation
-   */
-  handleEndAnimation = () => {
-    this.setState({ shouldAnimate: false });
   }
 
   /**
@@ -558,7 +558,6 @@ class Comment extends React.Component {
             'hearing-comment__is-pinned': this.props.data.pinned,
           }
         ])}
-        onAnimationEnd={this.handleEndAnimation}
         ref={this.commentRef}
         id={`comment-${data.id}`}
       >
