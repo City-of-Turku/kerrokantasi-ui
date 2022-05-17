@@ -290,3 +290,15 @@
   display: flex;
   justify-content: flex-end;
 }
+
+.contact-elements .Select-control .Select-value {
+  .Select-value-label {
+    padding: 0;
+    button {
+      appearance: none;
+      background-color: transparent;
+      border: none;
+      padding: 2px 5px;
+    }
+  }
+}

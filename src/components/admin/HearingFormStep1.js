@@ -81,12 +81,36 @@ class HearingFormStep1 extends React.Component {
     this.setState({ showLabelModal: false });
   }
 
-  openContactModal(contactInfo) {
-    this.setState({ showContactModal: true, contactInfo });
+  openContactModal(contactInfo, event) {
+    event.preventDefault();
+    const {hearing: { contact_persons: hearingContacts }} = this.props;
+    let editContact = {};
+
+    for (let index = 0; index < hearingContacts.length; index += 1) {
+      if (hearingContacts[index].id === contactInfo.id) {
+        editContact = Object.assign({}, hearingContacts[index]);
+        break;
+      }
+    }
+    this.setState({ showContactModal: true, contactInfo: editContact });
   }
 
   closeContactModal() {
     this.setState({ showContactModal: false });
+  }
+
+  /**
+   * Returns contacts array consisting of only the id, name and title keys.
+   * @param {string} title String that is displayed when hovering over the value.
+   * @param {Object[]} contacts
+   * @returns {{name: string, id: *, title: string}[]}
+   */
+  formatContacts = (title = '', contacts = []) => {
+    return contacts.map((person) => ({
+      id: person.id,
+      name: person.name,
+      title,
+    }));
   }
 
   render() {
@@ -101,6 +125,12 @@ class HearingFormStep1 extends React.Component {
       onLanguagesChange,
     } = this.props;
     const {language} = this.context;
+    const newContactOptions = this.formatContacts(
+      formatMessage({id: "addContactPerson"}), contactOptions
+    );
+    const selectedContacts = this.formatContacts(
+      formatMessage({id: "delete"}), hearing.contact_persons
+    );
 
     return (
       <div className="form-step">
@@ -174,24 +204,28 @@ class HearingFormStep1 extends React.Component {
           <div className="contact-elements">
             <Select
               valueRenderer={(options) => (
-                <span style={{cursor: 'pointer'}} onMouseDown={() => { this.openContactModal(options); }}>
+                <button
+                  onClick={(event) => { this.openContactModal(options, event); }}
+                  title={formatMessage({id: "editContact"})}
+                >
                   {options.name}
-                </span>
+                </button>
               )}
               labelKey="name"
               multi
               name="contacts"
               onChange={this.onContactsChange}
-              options={contactOptions}
+              options={newContactOptions}
               placeholder={formatMessage({id: "hearingContactsPlaceholder"})}
               simpleValue={false}
-              value={hearing.contact_persons.map(person => ({...person}))}
+              value={selectedContacts}
               valueKey="id"
+              clearAllText={formatMessage({id: "removeAll"})}
             />
             <Button
               bsStyle="primary"
               className="pull-right add-contact-button"
-              onClick={() => this.openContactModal({})}
+              onClick={(event) => this.openContactModal({}, event)}
             >
               <Icon className="icon" name="plus"/>
             </Button>
@@ -235,7 +269,7 @@ HearingFormStep1.propTypes = {
 HearingFormStep1.contextTypes = {
   language: PropTypes.string
 };
-
+export {HearingFormStep1 as UnconnectedHearingFormStep1};
 const WrappedHearingFormStep1 = injectIntl(HearingFormStep1);
 
 export default WrappedHearingFormStep1;
