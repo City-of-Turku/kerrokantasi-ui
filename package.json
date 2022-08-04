@@ -46,6 +46,7 @@
     "bootstrap-sass": "^3.4.1",
     "classnames": "^2.3.1",
     "codecov": "^3.8.1",
+    "compression": "^1.7.4",
     "connect-history-api-fallback": "^1.6.0",
     "cookie-parser": "^1.4.5",
     "cookie-session": "^2.0.0-alpha.1",
