@@ -51,7 +51,6 @@ exports[`SectionContainer component should render as expected 1`] = `
               id="hearing-section-details-accordion"
               in={true}
               mountOnEnter={false}
-              role="region"
               timeout={300}
               unmountOnExit={false}
             >
