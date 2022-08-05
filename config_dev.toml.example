@@ -74,6 +74,6 @@ city_config="cities/helsinki"
 # Default: "https://drive.google.com/open?id=1vtUNzbJNVcp7K9JPrE6XP8yTmkBLW3N3FGEsR1NbbIw"
 # admin_help_url=
 
-# Should requests be served with compression?
+# Should responses be served with compression?
 # Default: false
-# enable_request_compression=true
+# enable_response_compression=true

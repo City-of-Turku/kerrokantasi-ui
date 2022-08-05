@@ -22,7 +22,7 @@ function ignition() {
   }
   const server = express();
 
-  if (settings.enable_request_compression) {
+  if (settings.enable_response_compression) {
     server.use(compression());
   }
 

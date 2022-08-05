@@ -35,8 +35,8 @@ const defaults = {
   enable_cookies: false,
   // Hearing admin help link url
   admin_help_url: 'https://drive.google.com/open?id=1vtUNzbJNVcp7K9JPrE6XP8yTmkBLW3N3FGEsR1NbbIw',
-  // Should requests be compressed
-  enable_request_compression: false,
+  // Should responses be compressed
+  enable_response_compression: false,
 };
 
 const optionalKeys = [
@@ -57,7 +57,7 @@ const optionalKeys = [
   "openid_authority",
   "enable_highcontrast",
   "admin_help_url",
-  "enable_request_compression",
+  "enable_response_compression",
 ];
 
 const mandatoryKeys = [
