@@ -496,7 +496,10 @@ export class SectionContainerComponent extends React.Component {
     if (isEmpty(section.content)) {
       return null;
     }
-    return <div dangerouslySetInnerHTML={{ __html: getAttr(section.content, language) }} />;
+    return <div
+      className="section-content"
+      dangerouslySetInnerHTML={{ __html: getAttr(section.content, language) }}
+    />;
   }
 
   renderSectionAbstract = (section, language) => {

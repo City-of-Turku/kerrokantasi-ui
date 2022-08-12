@@ -57,7 +57,7 @@ class Info extends React.Component {
     const content = getContent(this.props.language);
     const {intl} = this.props;
     return (
-      <div className="container">
+      <div className="container info-page">
         <Helmet title={intl.formatMessage({ id: 'infoPage' })} />
         <Row>
           <Col md={8}>

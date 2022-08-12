@@ -79,6 +79,7 @@ exports[`SectionContainer component should render as expected 1`] = `
                     showLightbox={false}
                   />
                   <div
+                    className="section-content"
                     dangerouslySetInnerHTML={
                       Object {
                         "__html": "<p>Samanaikaisesti Isosaaren avaamisen kanssa Helsingin kaupunki aloittaa saaren asemakaavoituksen. Saarta suunnitellaan monipuoliseksi virkistyksen ja matkailun keitaaksi. &nbsp;&nbsp;&nbsp;</p>
