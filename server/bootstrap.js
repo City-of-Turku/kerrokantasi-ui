@@ -12,6 +12,7 @@ import paths from '../conf/paths';
 import assetPaths from '../conf/assetPaths';
 import path from 'path';
 import fs from 'fs';
+import compression from "compression";
 
 function ignition() {
   const settings = getSettings();
@@ -20,6 +21,10 @@ function ignition() {
     console.log("Settings:\n", inspect(settings, {colors: true}));
   }
   const server = express();
+
+  if (settings.enable_response_compression) {
+    server.use(compression());
+  }
 
   const faviconPath = path.resolve(assetPaths.cityAssets, 'favicon');
 

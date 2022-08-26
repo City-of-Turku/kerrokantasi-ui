@@ -73,3 +73,7 @@ city_config="cities/helsinki"
 # Address for hearing admin help link
 # Default: "https://drive.google.com/open?id=1vtUNzbJNVcp7K9JPrE6XP8yTmkBLW3N3FGEsR1NbbIw"
 # admin_help_url=
+
+# Should responses be served with compression?
+# Default: false
+# enable_response_compression=true

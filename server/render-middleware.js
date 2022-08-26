@@ -50,6 +50,7 @@ function renderHTMLSkeleton(req, res, settings) {
         enableHighContrast={settings.enable_highcontrast}
         enableStrongAuth={settings.enable_strong_auth}
         adminHelpUrl={settings.admin_help_url}
+        enableResponseCompression={settings.enable_response_compression}
       />
     );
     res.status(200).send(html);

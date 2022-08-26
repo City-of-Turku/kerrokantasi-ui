@@ -259,7 +259,6 @@ export class SectionContainerComponent extends React.Component {
           in={this.state.mainHearingAttachmentsOpen}
           id="hearing-section-attachments-accordion"
           aria-hidden={this.state.mainHearingAttachmentsOpen ? "false" : "true"}
-          role="region"
         >
           <div className="accordion-content">
             <div className="section-content-spacer">
@@ -311,7 +310,6 @@ export class SectionContainerComponent extends React.Component {
           in={this.state.mainHearingProjectOpen}
           id="hearing-section-project-accordion"
           aria-hidden={this.state.mainHearingProjectOpen ? "false" : "true"}
-          role="region"
         >
           <div className="accordion-content">
             <div className="project-phases-list section-content-spacer">
@@ -381,7 +379,6 @@ export class SectionContainerComponent extends React.Component {
           in={this.state.mainHearingContactsOpen}
           id="hearing-section-contacts-accordion"
           aria-hidden={this.state.mainHearingContactsOpen ? "false" : "true"}
-          role="region"
         >
           <div className="accordion-content">
             <div className="section-content-spacer">
@@ -499,7 +496,10 @@ export class SectionContainerComponent extends React.Component {
     if (isEmpty(section.content)) {
       return null;
     }
-    return <div dangerouslySetInnerHTML={{ __html: getAttr(section.content, language) }} />;
+    return <div
+      className="section-content"
+      dangerouslySetInnerHTML={{ __html: getAttr(section.content, language) }}
+    />;
   }
 
   renderSectionAbstract = (section, language) => {
@@ -541,7 +541,6 @@ export class SectionContainerComponent extends React.Component {
             in={this.state.mainHearingDetailsOpen}
             id="hearing-section-details-accordion"
             aria-hidden={this.state.mainHearingDetailsOpen ? "false" : "true"}
-            role="region"
           >
             <div className="accordion-content">
               <div className="section-content-spacer">
