@@ -53,7 +53,7 @@ function renderHTMLSkeleton(req, res, settings) {
         enableResponseCompression={settings.enable_response_compression}
       />
     );
-    res.status(200).send(html);
+    res.status(200).send('<!DOCTYPE html>' + html);
   });
 }
 
