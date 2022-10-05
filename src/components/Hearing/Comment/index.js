@@ -605,9 +605,10 @@ class Comment extends React.Component {
                 >
                   {data.geojson && (
                   <HearingMap
-                  hearing={{geojson: data.geojson}}
-                  mapContainer={this.state.mapContainer}
-                  mapSettings={{dragging: false}}
+                    hearing={{geojson: data.geojson}}
+                    mapContainer={this.state.mapContainer}
+                    mapSettings={{dragging: false}}
+                    style={{height: '250px', width: '100%'}}
                   />
                   )}
                 </div>

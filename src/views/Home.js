@@ -66,7 +66,7 @@ export class Home extends React.Component {
           <OverviewMap
             enablePopups
             hearings={openHearings.data}
-            style={{width: '100%', height: isMobile ? '70%' : 600}}
+            style={{width: '100%', height: isMobile ? '70vh' : 600}}
             mapElementLimit={10}
           />
         </div>
