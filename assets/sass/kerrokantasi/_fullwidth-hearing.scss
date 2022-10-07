@@ -26,7 +26,8 @@
   }
 
   &-title-wrap {
-    padding-right: 70px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 
     .fullwidth-hearing-comments {
       position: absolute;
