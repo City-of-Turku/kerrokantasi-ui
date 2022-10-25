@@ -9,6 +9,7 @@ h1:focus,
 #main-container:not(.fullscreen) {
   min-height: 80vh;
   min-height: calc(100vh - 125px - 400px);
+
   &.headless {
     min-height: calc(100vh - 400px);
   }
@@ -108,8 +109,10 @@ a[target=_blank]::after {
 }
 
 a.list-group-item {
-  &:hover, &:focus {
-    > .badge {
+
+  &:hover,
+  &:focus {
+    >.badge {
       background: #fff;
       color: $theme-highlight-dark;
     }
@@ -210,6 +213,11 @@ a.fullwidth {
 .Select--multi .Select-value {
   color: $brand-info !important;
 }
+
 .Select-clear-zone {
   color: $text-muted !important;
+}
+
+.overview-map-popup-content {
+  word-wrap: break-word;
 }

@@ -210,11 +210,14 @@ class OverviewMap extends React.Component {
       const hearingURL = getHearingURL(hearing) + document.location.search;
       return (
         <Popup {...options}>
-          <div>
+          <div className="overview-map-popup-content">
             <h4>
               <a href={hearingURL}>{getAttr(hearing.title, language)}</a>
             </h4>
-            <p>{getAttr(hearing.abstract, language)}</p>
+            <div
+              // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{ __html: getAttr(hearing.abstract, language) }}
+            />
           </div>
         </Popup>
       );
