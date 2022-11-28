@@ -22,7 +22,7 @@
     background-position: center;
 
     @media (max-width: $screen-xs-max) {
-        display: none;
+      display: none;
     }
   }
 
@@ -85,6 +85,7 @@
 
 .hearing-comment__images {
   display: flex;
+  flex-wrap: wrap;
 
   &-image {
     max-width: 100px;
@@ -101,10 +102,10 @@
   border-bottom: 0;
   float: right;
 
-  > li {
+  >li {
     margin-bottom: -2px;
 
-    > a {
+    >a {
       border: 2px solid transparent;
 
       &:hover,
@@ -115,9 +116,9 @@
     }
   }
 
-  > li.active > a,
-  > li.active > a:hover,
-  > li.active > a:focus {
+  >li.active>a,
+  >li.active>a:hover,
+  >li.active>a:focus {
     border: 2px solid $gray-400;
     border-bottom-color: transparent;
   }
@@ -256,8 +257,9 @@
 }
 
 .admin-filter-selector {
-  > li > a {
+  >li>a {
     border: solid 2px $black;
+
     span.fa {
       padding-right: 5px;
     }
