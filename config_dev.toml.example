@@ -77,3 +77,7 @@ city_config="cities/helsinki"
 # Should responses be served with compression?
 # Default: false
 # enable_response_compression=true
+
+# String value that is considered as an empty comment
+# Default: '-'
+# empty_comment_string=

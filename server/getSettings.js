@@ -37,6 +37,8 @@ const defaults = {
   admin_help_url: 'https://drive.google.com/open?id=1vtUNzbJNVcp7K9JPrE6XP8yTmkBLW3N3FGEsR1NbbIw',
   // Should responses be compressed
   enable_response_compression: false,
+  // String value that is considered as an empty comment
+  empty_comment_string: '-',
 };
 
 const optionalKeys = [
@@ -58,6 +60,7 @@ const optionalKeys = [
   "enable_highcontrast",
   "admin_help_url",
   "enable_response_compression",
+  "empty_comment_string",
 ];
 
 const mandatoryKeys = [

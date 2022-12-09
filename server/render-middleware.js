@@ -51,6 +51,7 @@ function renderHTMLSkeleton(req, res, settings) {
         enableStrongAuth={settings.enable_strong_auth}
         adminHelpUrl={settings.admin_help_url}
         enableResponseCompression={settings.enable_response_compression}
+        emptyCommentString={settings.empty_comment_string}
       />
     );
     res.status(200).send('<!DOCTYPE html>' + html);
