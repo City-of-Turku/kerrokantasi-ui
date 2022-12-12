@@ -549,7 +549,7 @@ exports[`SortableCommentList component should render as expected 1`] = `
                 "selectOrDropImage": "Valitse tai pudota kuva",
                 "show": "Näytä",
                 "showAll": "Näytä kaikki ({n})",
-                "showAllCommentsMapHint": "Näytä kaikki lisätyt karttamerkinnät!",
+                "showAllCommentsMapHint": "Näytä kaikki lisätyt karttamerkinnät",
                 "showCommentMapResults": "Näytä kommenttien karttamerkinnät",
                 "showMap": "Näytä kartta",
                 "showMoreReplies": "Näytä vastaukset",

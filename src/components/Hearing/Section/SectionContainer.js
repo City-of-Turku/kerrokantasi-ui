@@ -794,6 +794,8 @@ export class SectionContainerComponent extends React.Component {
       <div className="map-results">
         <div>
           <button
+            aria-controls="hearing-comment-map-results"
+            aria-expanded={displayCommentResults}
             className="hearing-map-results-toggle-button btn-link"
             onClick={this.toggleMapContainer}
           >
@@ -802,7 +804,10 @@ export class SectionContainerComponent extends React.Component {
             </FormattedMessage>
           </button>
         </div>
-        <div className={classNames('map-results-container', {'map-open': displayCommentResults})}>
+        <div
+          className={classNames('map-results-container', {'map-open': displayCommentResults})}
+          id="hearing-comment-map-results"
+        >
           {isLoading && <LoadSpinner />}
           <Collapse
             in={displayCommentResults}

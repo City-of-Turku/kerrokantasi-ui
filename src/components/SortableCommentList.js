@@ -266,7 +266,10 @@ export class SortableCommentListComponent extends Component {
       } else { mapAttrs.hearings = [{geojson: hearingGeojson}]; }
     }
     return (
-      <div className={classnames({'map-container-row': displayCommentMap})}>
+      <div
+        className={classnames({'map-container-row': displayCommentMap})}
+        id="comment-map-preview"
+      >
         <Collapse
           in={displayCommentMap}
           onEntered={this.stopLoading}
@@ -391,10 +394,16 @@ export class SortableCommentListComponent extends Component {
                 {showCommentMap && (
                   <div className="col-xs-12 col-sm-6">
                     <div className="map-toggle-container">
-                      <div className="map-toggle-text-hint">
+                      <div
+                        className="map-toggle-text-hint"
+                        id="map-toggle-hint"
+                      >
                         {intl.formatMessage({id: 'showAllCommentsMapHint'})}
                       </div>
                       <button
+                        aria-describedby="map-toggle-hint"
+                        aria-expanded={displayCommentMap}
+                        aria-controls="comment-map-preview"
                         className={
                           classnames('btn btn-default btn-block map-toggle-button', {'map-open': displayCommentMap})
                         }
