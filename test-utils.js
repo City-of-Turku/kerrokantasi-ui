@@ -183,6 +183,38 @@ export const getIntlAsProp = () => {
   return intlProvider.getChildContext().intl;
 };
 
+export function mockComment(props = {}) {
+  return {
+    section: '',
+    language_code: 'fi',
+    answers: [],
+    comment: null,
+    comments: [],
+    n_comments: 0,
+    pinned: false,
+    reply_to: '',
+    creator_name: 'Anonymous',
+    creator_email: '',
+    deleted: false,
+    deleted_at: null,
+    deleted_by_type: null,
+    id: Math.floor(Math.random() * (99999 - 1000)),
+    content: 'This is content',
+    author_name: 'Anonymous',
+    n_votes: 0,
+    created_at: new Date().toISOString(),
+    is_registered: false,
+    can_edit: false,
+    geojson: null,
+    map_comment_text: '',
+    images: [],
+    label: null,
+    organization: null,
+    flagged: false,
+    ...props
+  };
+}
+
 // Contains ready to use mock data & functions for testing purposes
 export const mockStore = {
   mockHearingWithSections: {
@@ -478,6 +510,128 @@ export const mockStore = {
         borough: {}
       }
     },
+    exampleHearing: {
+      state: 'done',
+      data: {
+        abstract: {
+          fi: 'Tämä on suomenkielinen testiabstrakti. Sisältää huikean kuvauksen kyseisestä kuulemisesta.'
+        },
+        id: 'QWE2L1HxEOZTERjluyxyQZ412aYM8ABC',
+        n_comments: 1,
+        published: true,
+        labels: [],
+        open_at: '2022-10-22T21:00:00Z',
+        close_at: '2025-11-28T22:00:00Z',
+        created_at: '2022-10-20T11:07:26.630423Z',
+        servicemap_url: '',
+        sections: [
+          {
+            id: 'MAINxrlvrW9uCCjEaB9rW1dENHQMudeK',
+            type: 'main',
+            commenting: 'open',
+            commenting_map_tools: 'all',
+            voting: 'registered',
+            published: false,
+            created_at: '2022-10-20T11:07:26.618934Z',
+            images: [],
+            n_comments: 1,
+            type_name_singular: 'pääosio',
+            type_name_plural: 'pääosiot',
+            plugin_identifier: '',
+            plugin_data: '',
+            plugin_iframe_url: '',
+            plugin_fullscreen: false,
+            title: {},
+            abstract: {
+              fi: 'Suomenkielistä abstraktia? johdantoa'
+            },
+            content: {
+              fi: '<p>Suomenkielistä tekstisisältöä</p>'
+            },
+            questions: []
+          },
+          {
+            id: 'PART1rlvrW9uCCjEaB9rW1dENHQMudeK',
+            type: 'part',
+            commenting: 'open',
+            commenting_map_tools: 'all',
+            voting: 'registered',
+            published: false,
+            created_at: '2022-10-20T11:07:26.618934Z',
+            images: [],
+            n_comments: 0,
+            type_name_singular: 'osa-alue',
+            type_name_plural: 'osa-alueet',
+            plugin_identifier: '',
+            plugin_data: '',
+            plugin_iframe_url: '',
+            plugin_fullscreen: false,
+            title: {},
+            abstract: {
+              fi: 'Osa-alue A johdanto'
+            },
+            content: {
+              fi: '<p>Osa-alue A tekstisisältö</p>'
+            },
+            questions: []
+          },
+          {
+            id: 'PART2rlvrW9uCCjEaB9rW1dENHQMudeK',
+            type: 'part',
+            commenting: 'open',
+            commenting_map_tools: 'all',
+            voting: 'registered',
+            published: false,
+            created_at: '2022-10-20T11:07:26.618934Z',
+            images: [],
+            n_comments: 0,
+            type_name_singular: 'osa-alue',
+            type_name_plural: 'osa-alueet',
+            plugin_identifier: '',
+            plugin_data: '',
+            plugin_iframe_url: '',
+            plugin_fullscreen: false,
+            title: {},
+            abstract: {
+              fi: 'Osa-alue B johdanto'
+            },
+            content: {
+              fi: '<p>Osa-alue B tekstisisältö</p>'
+            },
+            questions: []
+          }
+        ],
+        closed: false,
+        geojson: {
+          type: 'Polygon',
+          coordinates: [
+            [22.295375, 60.468486],
+            [22.295375, 60.470474],
+            [22.303099, 60.470474],
+            [22.303099, 60.468486],
+            [22.295375, 60.468486]
+          ]
+        },
+        organization: 'Testorganization',
+        slug: 'exampleHearing',
+        main_image: null,
+        contact_persons: [
+          {
+            id: 'LAJDwlU21Qs6KPgboWgOwRIBAKi4x60X',
+            name: 'Erkki Esimerkki',
+            phone: '09 123 456',
+            email: 'erkki.esimerkki@joku.domain',
+            organization: 'Testorganization',
+            title: {}
+          }
+        ],
+        default_to_fullscreen: false,
+        title: {
+          fi: 'Esimerkki kuulemisesta!'
+        },
+        borough: {}
+      }
+    },
     currentlyViewed: '#hearing'
   },
   dispatch: () => {},
@@ -673,6 +827,48 @@ export const mockStore = {
           }]
         }
       ]
+    },
+    MAINxrlvrW9uCCjEaB9rW1dENHQMudeK: {
+      count: 1,
+      next: null,
+      previous: null,
+      isFetching: false,
+      results: [
+        {
+          section: 'MAINxrlvrW9uCCjEaB9rW1dENHQMudeK',
+          language_code: '',
+          id: 2699,
+          content: 'Kommentin tekstisisältö',
+          author_name: 'Kommentti Kalle',
+          n_votes: 0,
+          created_at: '2022-10-29T11:23:47.475069Z',
+          is_registered: false,
+          can_edit: false,
+          geojson: {
+            type: 'Point',
+            coordinates: [22.284764, 60.444967]
+          },
+          images: [],
+          label: null,
+          hearing: 'QWE2L1HxEOZTERjluyxyQZ412aYM8ABC',
+          plugin_data: '',
+          answers: []
+        }
+      ]
+    },
+    PART1rlvrW9uCCjEaB9rW1dENHQMudeK: {
+      count: 0,
+      next: null,
+      previous: null,
+      isFetching: false,
+      results: []
+    },
+    PART2rlvrW9uCCjEaB9rW1dENHQMudeK: {
+      count: 0,
+      next: null,
+      previous: null,
+      isFetching: false,
+      results: []
     }
   }
 };

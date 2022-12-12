@@ -16,15 +16,59 @@
     border-top: 1px solid $theme-primary-light;
   }
 
+  .sort-selector-container {
+    @extend .col-xs-12;
+    @extend .col-sm-4;
+    &__single {
+      @extend .col-sm-offset-8;
+    }
+    &__multi {
+      @extend .col-sm-offset-2;
+    }
+  }
+
   .sort-selector {
-    @extend .col-md-4;
-    @extend .col-md-offset-8;
-    @extend .col-sm-6;
-    @extend .col-sm-offset-6;
     font-size: 1.2rem;
     padding-top: 5px;
     padding-bottom: 5px;
     height: 50px;
+  }
+  .map-toggle-container {
+    padding-top: 5px;
+    .map-toggle-text-hint {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+    .map-toggle-button {
+      height: 38px;
+      font-family: inherit;
+      font-size: 0.875em;
+      background-color: white;
+      font-weight: bold;
+      padding: 0;
+      &.map-open {
+        background-color: white;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+    }
+  }
+  .map-container-row {
+    padding-top: 30px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-top: none;
+    .map-wrapper {
+      padding: 12px;
+      background-color: #ffffff;
+    }
+    .hearing-map-container {
+      margin-bottom: 0;
+      @media screen and (max-width: $screen-xs-min){
+        padding-top: 66.66%;
+      }
+    }
   }
 
   &__loader {

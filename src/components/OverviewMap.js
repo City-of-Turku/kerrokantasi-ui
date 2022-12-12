@@ -6,6 +6,7 @@ import getAttr from '../utils/getAttr';
 import Leaflet, { LatLng } from 'leaflet';
 import { Polygon, Marker, Polyline, Map, TileLayer, FeatureGroup, Popup, GeoJSON } from 'react-leaflet';
 import { connect } from 'react-redux';
+import nl2br from 'react-nl2br';
 
 import leafletMarkerIconUrl from '../../assets/images/leaflet/marker-icon.png';
 import leafletMarkerRetinaIconUrl from '../../assets/images/leaflet/marker-icon-2x.png';
@@ -203,21 +204,27 @@ class OverviewMap extends React.Component {
    */
   getPopupContent(hearing, geojson) {
     const {language} = this.context;
-    const {enablePopups} = this.props;
+    const {enablePopups, isCommentPopup} = this.props;
     // offset added in order to open the popup window from the middle of the Marker instead of the default bottom.
     const options = geojson.type === 'Point' ? {offset: [0, -20]} : {};
     if (enablePopups) {
       const hearingURL = getHearingURL(hearing) + document.location.search;
+      // author name or link to hearing.
+      const header = isCommentPopup ?
+        <React.Fragment>{hearing.author_name}</React.Fragment>
+        : <a href={hearingURL}>{getAttr(hearing.title, language)}</a>;
+      // comment text content or the hearing's abstract.
+      const content = isCommentPopup ?
+        <p>{nl2br(hearing.abstract)}</p>
+        // eslint-disable-next-line react/no-danger
+        : <div dangerouslySetInnerHTML={{ __html: getAttr(hearing.abstract, language) }} />;
       return (
         <Popup {...options}>
           <div className="overview-map-popup-content">
             <h4>
-              <a href={hearingURL}>{getAttr(hearing.title, language)}</a>
+              {header}
             </h4>
-            <div
-              // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: getAttr(hearing.abstract, language) }}
-            />
+            {content}
           </div>
         </Popup>
       );
@@ -292,6 +299,7 @@ OverviewMap.propTypes = {
   enablePopups: PropTypes.bool,
   hearings: PropTypes.array.isRequired,
   hideIfEmpty: PropTypes.bool,
+  isCommentPopup: PropTypes.bool,
   isHighContrast: PropTypes.bool,
   mapContainer: PropTypes.object,
   mapElementLimit: PropTypes.number,
@@ -305,8 +313,10 @@ OverviewMap.contextTypes = {
 };
 
 OverviewMap.defaultProps = {
-  showOnCarousel: false,
+  enablePopups: false,
+  isCommentPopup: false,
   mapContainer: undefined,
+  showOnCarousel: false,
 };
 
 export default connect(mapStateToProps, null)(OverviewMap);
