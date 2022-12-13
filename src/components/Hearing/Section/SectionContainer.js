@@ -456,7 +456,7 @@ export class SectionContainerComponent extends React.Component {
 
   renderCommentsWrapper = () => {
     const {hearing} = this.props;
-    const displayResults = hearing.geojson && hearing.closed && hearing.published && hearing.n_comments !== 0;
+    const displayResults = hearing.closed && hearing.published && hearing.n_comments !== 0;
     return (
       <section
         className="hearing-section comments-section"

@@ -162,12 +162,12 @@ describe('SectionContainer', () => {
         const wrapper = getWrapper();
         expect(wrapper.find('div.map-results')).toHaveLength(0);
       });
-      test('is NOT rendered if hearing is closed but does NOT have geojson', () => {
+      test('is rendered if hearing is closed but does NOT have geojson', () => {
         const closedHearing = Object.assign({}, getHearingWithSlug(mockState, 'exampleHearing'));
         closedHearing.closed = true;
         closedHearing.geojson = null;
         const wrapper = getWrapper({hearing: closedHearing});
-        expect(wrapper.find('div.map-results')).toHaveLength(0);
+        expect(wrapper.find('div.map-results')).toHaveLength(1);
       });
     });
   });

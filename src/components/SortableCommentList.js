@@ -257,14 +257,12 @@ export class SortableCommentListComponent extends Component {
 
   renderCommentMap = () => {
     const { displayCommentMap, loading, mapContainer } = this.state;
-    const { sectionComments, hearingGeojson } = this.props;
-    const mapAttrs = {};
-    if (hearingGeojson) {
-      if (sectionComments && sectionComments.results) {
-        // only non-deleted comments are shown/used
-        mapAttrs.hearings = sectionComments.results.filter(comment => !comment.deleted);
-      } else { mapAttrs.hearings = [{geojson: hearingGeojson}]; }
-    }
+    const { sectionComments } = this.props;
+    const mapAttrs = {
+      // only non-deleted comments are shown/used
+      hearings: sectionComments.results.filter(comment => comment.geojson && !comment.deleted)
+    };
+
     return (
       <div
         className={classnames({'map-container-row': displayCommentMap})}
@@ -350,15 +348,13 @@ export class SortableCommentListComponent extends Component {
     /**
      * True if the following are true:
      * - section contains comments.
+     * - at least one of the comments contain geojson data, and the comment hasn't been deleted.
      * - hearing not closed.
      * - hearing is published.
-     * - hearing contains geojson.
-     * - at least one of the comments contains geojson data, and the comment hasn't been deleted.
      * @type {boolean}
      */
     const showCommentMap =
-      showCommentList && !closed &&
-      published && hearingGeojson &&
+      showCommentList && !closed && published &&
       sectionComments.results.some(comment => comment.geojson && !comment.deleted);
     return (
       <div>
