@@ -352,6 +352,7 @@ class Comment extends React.Component {
         key={`$answer-for-question-${answer.question}`}
         loggedIn={!isEmpty(this.props.user)}
         onChange={this.handleAnswerChange}
+        canAnswer={this.props.canReply}
       />
     );
   };
