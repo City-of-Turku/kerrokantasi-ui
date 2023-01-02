@@ -4,6 +4,7 @@ import { find, values, merge } from 'lodash';
 import initAttr from './initAttr';
 import {acceptsComments} from "./hearing";
 import {isAdmin} from "./user";
+import config from '../config';
 
 export const SectionTypes = {
   MAIN: 'main',
@@ -287,4 +288,13 @@ export function groupSections(sections) {
 
 export function getSectionURL(hearingSlug, section) {
   return `/${hearingSlug}/${section.id}`;
+}
+
+/**
+ * Tells whether given comment is considered empty or not.
+ * @param {Object} commentData
+ * @returns {boolean} true when comment is empty and false if not.
+ */
+export function isCommentEmpty(commentData) {
+  return commentData.content === config.emptyCommentString;
 }

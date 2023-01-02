@@ -1,3 +1,4 @@
+import config from "../../src/config";
 import {
   checkFormErrors,
   getFirstUnansweredQuestion,
@@ -6,6 +7,7 @@ import {
   hasUserAnsweredAllQuestions,
   hasUserAnsweredQuestions,
   initNewSection,
+  isCommentEmpty,
   isCommentRequired,
   isEmptyCommentAllowed
 } from "../../src/utils/section";
@@ -261,6 +263,18 @@ describe('section util tests', () => {
         expect(getFirstUnansweredQuestion(createUser({answered_questions: [2]}), sectionWithQuestions))
           .toBe(sectionWithQuestions.questions[0]);
       });
+    });
+  });
+
+  describe('isCommentEmpty', () => {
+    test('returns true when comment is empty', () => {
+      const commentData = {content: config.emptyCommentString};
+      expect(isCommentEmpty(commentData)).toBe(true);
+    });
+
+    test('returns false when comment is not empty', () => {
+      const commentData = {content: 'abc'};
+      expect(isCommentEmpty(commentData)).toBe(false);
     });
   });
 });

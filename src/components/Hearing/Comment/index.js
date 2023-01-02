@@ -21,6 +21,7 @@ import moment from 'moment';
 
 import HearingMap from "../HearingMap";
 import getMessage from '../../../utils/getMessage';
+import { isCommentEmpty } from '../../../utils/section';
 
 class Comment extends React.Component {
   constructor(props) {
@@ -510,7 +511,11 @@ class Comment extends React.Component {
 
   renderCommentText = (data) => {
     if (!data.deleted) {
-      return <p>{nl2br(data.content)}</p>;
+      return (
+        <p className={isCommentEmpty(data) ? 'empty-comment-text' : null}>
+          {nl2br(data.content)}
+        </p>
+      );
     }
     if (data.deleted_by_type === "self") {
       return <FormattedMessage id="sectionCommentSelfDeletedMessage"/>;
@@ -565,7 +570,13 @@ class Comment extends React.Component {
         <div className="hearing-comment__comment-wrapper">
           {this.renderCommentHeader(isAdminUser)}
           {!this.props.isReply && this.renderCommentAnswers()}
-          <div className={classnames('hearing-comment-body', {'hearing-comment-body-disabled': data.deleted})}>
+          <div
+            className={classnames(
+              'hearing-comment-body',
+              {'hearing-comment-body-disabled': data.deleted},
+              {'hearing-comment-body-empty': (isCommentEmpty(data))}
+            )}
+          >
             {this.renderCommentText(data)}
           </div>
           <div className="hearing-comment__images">
