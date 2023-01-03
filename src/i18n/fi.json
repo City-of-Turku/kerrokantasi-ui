@@ -384,6 +384,7 @@
   "validationHearingProjectPhaseTitle": "Aseta vaiheen otsikko ennen tallennusta.",
   "validationHearingProjectTitle": "Aseta projektin nimi ennen tallennusta.",
   "validationHearingSlug": "Aseta osoite ennen tallentamista.",
+  "validationHearingSlugFormatting": "Osoite ei voi sisältää ääkkösiä tai muita erikoismerkkejä kuin _ tai -.",
   "validationHearingTitle": "Aseta otsikko ennen tallentamista.",
   "validationNotification": "Lomake sisältää virheitä, tarkista virheet ja kokeile uudestaan.",
   "validationOnlyNumbers": "Tässä kentässä voi olla vain numeroita",

@@ -293,6 +293,7 @@
   "validationHearingProjectPhaseTitle": "Ange fasets titel.",
   "validationHearingProjectTitle": "Ange projekt namn.",
   "validationHearingSlug": "Ange adress.",
+  "validationHearingSlugFormatting": "Adress kan endast innehålla bokstäver a-z, siffror, _ och -.",
   "validationHearingTitle": "Ange rubrik.",
   "validationNotification": "Formuläret innehåller fel, korrigera felen och försök igen. ",
   "validationOnlyNumbers": "Det här fältet kan bara innehålla siffror",

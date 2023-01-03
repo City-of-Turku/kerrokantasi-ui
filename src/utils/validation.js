@@ -42,6 +42,16 @@ const validateFunction = {
     return localSlug === '';
   },
   /**
+   * Returns true if slug contains chars other than a-z, numbers, _ or -
+   * @param {string} hearingSlug
+   * @returns {boolean}
+   */
+  slug_formatting: function slugFormatting(hearingSlug) {
+    const localSlug = hearingSlug.trim();
+    const unallowedChars = /[^\w-]/;
+    return unallowedChars.test(localSlug);
+  },
+  /**
    * Returns true if contactPersons is empty
    * @param {object[]} contactPersons
    * @returns {boolean}

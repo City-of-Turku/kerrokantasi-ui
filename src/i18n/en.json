@@ -306,6 +306,7 @@
   "validationHearingProjectPhaseTitle": "Fill in the phases title.",
   "validationHearingProjectTitle": "Fill in the project's title.",
   "validationHearingSlug": "Fill in the address.",
+  "validationHearingSlugFormatting": "Address can only contain letters a-z, numbers, _ and -.",
   "validationHearingTitle": "Fill in title.",
   "validationNotification": "The form contains errors, correct the errors and try again.",
   "validationOnlyNumbers": "This field can only contain numbers",

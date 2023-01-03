@@ -164,6 +164,9 @@ class HearingEditor extends React.Component {
     if (validateFunction.slug(hearing.slug)) {
       localErrors[1].slug = formatMessage({id: 'validationHearingSlug'});
     }
+    if (validateFunction.slug_formatting(hearing.slug)) {
+      localErrors[1].slug = formatMessage({id: 'validationHearingSlugFormatting'});
+    }
     if (validateFunction.contact_persons(hearing.contact_persons)) {
       localErrors[1].contact_persons = formatMessage({id: 'validationHearingContactPersons'});
     }
