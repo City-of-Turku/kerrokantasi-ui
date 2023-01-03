@@ -269,7 +269,7 @@ class Comment extends React.Component {
       {this.props.data.pinned && this.renderPinnedHeader()}
       <div className="hearing-comment-publisher">
         <span className="hearing-comment-user">
-          {data.is_registered ?
+          {(data.is_registered && !data.deleted) ?
             <span className={classnames({
               'hearing-comment-user-registered': !isAdminUser,
               'hearing-comment-user-organization': isAdminUser,
@@ -283,7 +283,7 @@ class Comment extends React.Component {
               :&nbsp;
             </span>
             : null}
-          {data.author_name || <FormattedMessage id="anonymous"/>}
+          {(data.author_name && !data.deleted) ? data.author_name : <FormattedMessage id="anonymous"/>}
         </span>
         <OverlayTrigger placement="top" overlay={this.dateTooltip(data)} delayShow={300}>
           <span className="hearing-comment-date">
@@ -569,7 +569,7 @@ class Comment extends React.Component {
             {this.renderCommentText(data)}
           </div>
           <div className="hearing-comment__images">
-            {data.images
+            {(data.images && !data.deleted)
               ? data.images.map((image) =>
                 <a
                   className="hearing-comment-images-image"
@@ -588,7 +588,7 @@ class Comment extends React.Component {
               )
               : null}
           </div>
-          {data.geojson && (
+          {(data.geojson && !data.deleted) && (
             <div className="hearing-comment__map">
               <React.Fragment>
                 <Button
