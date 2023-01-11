@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {FormattedMessage, injectIntl, intlShape} from 'react-intl';
 import {connect} from 'react-redux';
-import {FormGroup, FormControl, ControlLabel} from 'react-bootstrap';
+import {FormGroup, FormControl, ControlLabel, Collapse} from 'react-bootstrap';
 import {get, isEmpty, keys, throttle, find} from 'lodash';
 import { Waypoint } from 'react-waypoint';
 import PropTypes from 'prop-types';
@@ -15,6 +15,7 @@ import CommentForm from './BaseCommentForm';
 import {getNickname, getAuthorDisplayName} from '../utils/user';
 import {getSectionCommentingMessage} from "../utils/section";
 import {getUser} from "../selectors/user";
+import HearingMap from './Hearing/HearingMap';
 import classnames from 'classnames';
 
 const ORDERING_CRITERIA = {
@@ -31,10 +32,13 @@ export class SortableCommentListComponent extends Component {
     super(props);
 
     this.state = {
-      showLoader: false,
+      answers: this._defaultAnswerState(),
       collapseForm: false,
+      displayCommentMap: false,
+      loading: false,
+      mapContainer: null,
       shouldAnimate: false,
-      answers: this._defaultAnswerState()
+      showLoader: false,
     };
 
     this.fetchMoreComments = throttle(this._fetchMoreComments).bind(this);
@@ -113,7 +117,9 @@ export class SortableCommentListComponent extends Component {
       });
     }
   }
-
+  handleSetMapContainer = (mapContainer) => {
+    this.setState({ mapContainer });
+  }
 
   /**
    * When posting a new comment.
@@ -249,7 +255,46 @@ export class SortableCommentListComponent extends Component {
     }
   }
 
+  renderCommentMap = () => {
+    const { displayCommentMap, loading, mapContainer } = this.state;
+    const { sectionComments } = this.props;
+    const mapAttrs = {
+      // only non-deleted comments are shown/used
+      hearings: sectionComments.results.filter(comment => comment.geojson && !comment.deleted)
+    };
+
+    return (
+      <div
+        className={classnames({'map-container-row': displayCommentMap})}
+        id="comment-map-preview"
+      >
+        <Collapse
+          in={displayCommentMap}
+          onEntered={this.stopLoading}
+        >
+          <div>
+            {loading && <LoadSpinner />}
+            {!loading && (
+              <React.Fragment>
+                <div className="map-wrapper">
+                  <div className="hearing-map-container" ref={this.handleSetMapContainer}>
+                    <HearingMap mapContainer={mapContainer} {...mapAttrs} />
+                  </div>
+                </div>
+              </React.Fragment>
+            )}
+          </div>
+        </Collapse>
+      </div>
+    );
+  }
+
+  stopLoading = () => {
+    this.setState({loading: false});
+  }
+
   render() {
+    const { displayCommentMap } = this.state;
     const {
       displayVisualization,
       hearingId,
@@ -282,7 +327,7 @@ export class SortableCommentListComponent extends Component {
             hearingId={hearingId}
             onPostComment={this.onPostComment}
             defaultNickname={getNickname(user)}
-            nicknamePlaceholder={getAuthorDisplayName(user) || this.props.intl.formatMessage({id: "anonymous"})}
+            nicknamePlaceholder={getAuthorDisplayName(user) || intl.formatMessage({id: "anonymous"})}
             collapseForm={this.state.collapseForm}
             section={section}
             language={language}
@@ -300,6 +345,17 @@ export class SortableCommentListComponent extends Component {
       </div>
     ) : null;
     const pluginContent = showCommentList && displayVisualization ? this.renderPluginContent() : null;
+    /**
+     * True if the following are true:
+     * - section contains comments.
+     * - at least one of the comments contain geojson data, and the comment hasn't been deleted.
+     * - hearing not closed.
+     * - hearing is published.
+     * @type {boolean}
+     */
+    const showCommentMap =
+      showCommentList && !closed && published &&
+      sectionComments.results.some(comment => comment.geojson && !comment.deleted);
     return (
       <div>
         {section.commenting !== 'none' &&
@@ -331,30 +387,63 @@ export class SortableCommentListComponent extends Component {
             )}
             {showCommentList &&
               <div className="row">
-                <form className="sort-selector">
-                  <FormGroup controlId="sort-select">
-                    <ControlLabel>
-                      <FormattedMessage id="commentOrder" />
-                    </ControlLabel>
-                    <div className="select">
-                      <FormControl
-                        componentClass="select"
-                        onChange={event => {
-                          this.fetchComments(section.id, event.target.value);
-                        }}
-                        value={get(sectionComments, 'ordering')}
+                {showCommentMap && (
+                  <div className="col-xs-12 col-sm-6">
+                    <div className="map-toggle-container">
+                      <div
+                        className="map-toggle-text-hint"
+                        id="map-toggle-hint"
                       >
-                        {keys(ORDERING_CRITERIA).map(key =>
-                          <FormattedMessage id={key} key={key}>
-                            {(message) => <option value={ORDERING_CRITERIA[key]}>{message}</option>}
-                          </FormattedMessage>
-                        )}
-                      </FormControl>
+                        {intl.formatMessage({id: 'showAllCommentsMapHint'})}
+                      </div>
+                      <button
+                        aria-describedby="map-toggle-hint"
+                        aria-expanded={displayCommentMap}
+                        aria-controls="comment-map-preview"
+                        className={
+                          classnames('btn btn-default btn-block map-toggle-button', {'map-open': displayCommentMap})
+                        }
+                        onClick={() => this.setState({displayCommentMap: !displayCommentMap, loading: true})}
+                      >
+                        {intl.formatMessage({id: displayCommentMap ? 'closeMap' : 'showMap'})}
+                      </button>
                     </div>
-                  </FormGroup>
-                </form>
+                  </div>
+                )}
+                <div className={classnames('sort-selector-container', {
+                  [`sort-selector-container__${showCommentMap ? 'multi' : 'single'}`]: true,
+                })}
+                >
+                  <div className="sort-selector">
+                    <form>
+                      <FormGroup controlId="sort-select">
+                        <ControlLabel>
+                          <FormattedMessage id="commentOrder" />
+                        </ControlLabel>
+                        <div className="select">
+                          <FormControl
+                            componentClass="select"
+                            onChange={event => {
+                              this.fetchComments(section.id, event.target.value);
+                            }}
+                            value={get(sectionComments, 'ordering')}
+                          >
+                            {keys(ORDERING_CRITERIA).map(key =>
+                              <FormattedMessage id={key} key={key}>
+                                {(message) => <option value={ORDERING_CRITERIA[key]}>{message}</option>}
+                              </FormattedMessage>
+                            )}
+                          </FormControl>
+                        </div>
+                      </FormGroup>
+                    </form>
+                  </div>
+                </div>
               </div>}
-
+            { showCommentMap ?
+              this.renderCommentMap()
+              : null
+            }
             {showCommentList &&
               <div>
                 <WrappedCommentList

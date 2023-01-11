@@ -151,17 +151,22 @@ const byId = handleActions(
         }
       }, state);
     },
-    [EditorActions.DELETE_LAST_OPTION]: (state, {payload: {sectionId, questionId}}) => {
-      const index = findIndex(
+    [EditorActions.DELETE_OPTION]: (state, {payload: {sectionId, questionId, optionKey, useOptionIndex = false}}) => {
+      const questionIndex = findIndex(
         state[sectionId].questions,
         (quest) => quest.frontId === questionId || quest.id === questionId
       );
-      const question = state[sectionId].questions[index];
-      const newOptions = question.options.slice(0, -1);
+      const question = state[sectionId].questions[questionIndex];
+      let newOptions;
+      if (useOptionIndex) {
+        newOptions = question.options.filter((val, index) => index !== optionKey);
+      } else {
+        newOptions = question.options.filter(option => option.id !== optionKey);
+      }
       return updeep({
         [sectionId]: {
           questions: {
-            [index]: {
+            [questionIndex]: {
               options: newOptions
             }
           }

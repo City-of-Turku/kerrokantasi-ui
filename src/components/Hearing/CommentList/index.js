@@ -16,15 +16,15 @@ export class CommentList extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {comments: newComments} = this.props;
-    if (prevProps.comments !== newComments) {
+    const {comments: newComments, section} = this.props;
+    if (prevProps.section.id === section.id && prevProps.comments !== newComments) {
       const updatedLoadingState = newComments.reduce((acc, curr, index) => {
         /**
          * loadingSubComments is undefined by default, boolean true is added once we start fetching
          * replies made to that comment, boolean false added when replies have been successfully fetched.
          * @type {undefined | boolean}
          */
-        const previousLoadingState = prevProps.comments[index].loadingSubComments;
+        const previousLoadingState = prevProps.comments[index] && prevProps.comments[index].loadingSubComments;
         const currentLoadingState = curr.loadingSubComments;
         // if previously loading and now not loading -> true so the replies are visible once mounted, otherwise false.
         const nextLoadingState = (previousLoadingState && !currentLoadingState) || false;

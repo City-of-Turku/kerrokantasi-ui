@@ -54,10 +54,17 @@ export class QuestionForm extends React.Component {
             </div>
             <div style={{flex: '1', marginTop: '48px', marginLeft: '15px'}}>
               {
-                question.options.length > 2 && index === question.options.length - 1 &&
+                question.options.length > 2 &&
                 <Button
                   bsStyle="danger"
-                  onClick={() => deleteOption(sectionId, question.frontId || question.id, index)}
+                  onClick={() =>
+                    deleteOption(sectionId, (question.frontId || question.id), (option.id || index), !option.id)
+                    // The 2nd params question.frontId exists only when creating a new question that hasn't been saved,
+                    // if it's falsy -> use the actual .id value.
+                    // Third param works in a similar manner, option.id exists for options that have been saved,
+                    // when deleting options that haven't been saved -> use the index number.
+                    // Fourth param is true IF option.id is falsy -> true when deleting options that haven't been saved.
+                }
                 >
                   <Icon style={{fontSize: '24px'}} className="icon" name="trash" />
                 </Button>
@@ -115,26 +122,34 @@ export class QuestionForm extends React.Component {
   }
 
   render() {
-    const {question, isPublic} = this.props;
+    const {question: {frontId, id, n_answers: nAnswers}, isPublic, isEditableQuestion} = this.props;
+    const editableQuestion = frontId || (id && !isPublic && nAnswers === 0) || isEditableQuestion;
     /**
-     * Display editable form when question is new or when the hearing is not yet public/hasn't been public.
-     * Otherwise display details of existing questions
+     * Display editable form when:
+     * - the question is new
+     * - the hearing is a draft
+     * - hearing has been published but is waiting for publishing date.
+     * - hearing is public but doesn't have any comments
+     * - hearing was previously public but was unpublished and doesn't have any comments.
+     *
+     * In all other cases display details of existing questions.
      */
-    return (question.frontId || (question.id && !isPublic && question.n_answers === 0))
+    return editableQuestion
       ? this.getEditableForm() : this.getQuestionDetails();
   }
 }
 
 QuestionForm.propTypes = {
-  question: PropTypes.object,
-  sectionId: PropTypes.string,
   addOption: PropTypes.func,
   deleteOption: PropTypes.func,
-  sectionLanguages: PropTypes.array,
-  onQuestionChange: PropTypes.func,
+  isEditableQuestion: PropTypes.bool,
+  isPublic: PropTypes.bool,
   lang: PropTypes.string,
   onDeleteExistingQuestion: PropTypes.func,
-  isPublic: PropTypes.bool,
+  onQuestionChange: PropTypes.func,
+  question: PropTypes.object,
+  sectionId: PropTypes.string,
+  sectionLanguages: PropTypes.array,
 };
 
 export default QuestionForm;

@@ -40,6 +40,7 @@ export default class Html extends React.Component {
       enableStrongAuth,
       adminHelpUrl,
       enableResponseCompression,
+      emptyCommentString,
     } = this.props;
     const initialStateHtml = `
     window.STATE = ${JSON.stringify(initialState || {})};
@@ -60,6 +61,7 @@ export default class Html extends React.Component {
     window.ENABLE_STRONG_AUTH = ${JSON.stringify(enableStrongAuth)}
     window.ADMIN_HELP_URL = ${JSON.stringify(adminHelpUrl)};
     window.ENABLE_RESPONSE_COMPRESSION = ${JSON.stringify(enableResponseCompression)};
+    window.EMPTY_COMMENT_STRING = ${JSON.stringify(emptyCommentString)};
     `;
     const {title, description, url} = this.getMeta();
     return (
@@ -109,4 +111,5 @@ Html.propTypes = {
   enableStrongAuth: PropTypes.bool,
   adminHelpUrl: PropTypes.string,
   enableResponseCompression: PropTypes.bool,
+  emptyCommentString: PropTypes.string,
 };

@@ -199,6 +199,7 @@ describe('UserComment', () => {
           expect(mapElement.prop('hearing')).toEqual(geojsonValues);
           expect(mapElement.prop('mapContainer')).toEqual(wrapper.state('mapContainer'));
           expect(mapElement.prop('mapSettings')).toEqual({dragging: false});
+          expect(mapElement.prop('style')).toEqual({height: "250px", width: "100%"});
         });
       });
     });

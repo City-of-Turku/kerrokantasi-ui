@@ -2,9 +2,11 @@ const webpack = require('webpack');
 const paths = require('../paths');
 const path = require('path');
 const assetPaths = require('../assetPaths');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const plugins = [
   new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /en|fi|sv/),
+  new CleanWebpackPlugin(),
 ];
 
 if (process.env.BUNDLE_ANALYZER) {

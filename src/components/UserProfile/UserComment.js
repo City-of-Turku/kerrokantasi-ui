@@ -147,6 +147,7 @@ class UserComment extends React.Component {
                       hearing={{geojson: comment.geojson}}
                       mapContainer={this.state.mapContainer}
                       mapSettings={{dragging: false}}
+                      style={{height: '250px', width: '100%'}}
                     />
                   )}
                 </div>

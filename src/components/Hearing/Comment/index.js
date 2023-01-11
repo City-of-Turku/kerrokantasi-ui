@@ -21,6 +21,7 @@ import moment from 'moment';
 
 import HearingMap from "../HearingMap";
 import getMessage from '../../../utils/getMessage';
+import { isCommentEmpty } from '../../../utils/section';
 
 class Comment extends React.Component {
   constructor(props) {
@@ -269,7 +270,7 @@ class Comment extends React.Component {
       {this.props.data.pinned && this.renderPinnedHeader()}
       <div className="hearing-comment-publisher">
         <span className="hearing-comment-user">
-          {data.is_registered ?
+          {(data.is_registered && !data.deleted) ?
             <span className={classnames({
               'hearing-comment-user-registered': !isAdminUser,
               'hearing-comment-user-organization': isAdminUser,
@@ -283,7 +284,7 @@ class Comment extends React.Component {
               :&nbsp;
             </span>
             : null}
-          {data.author_name || <FormattedMessage id="anonymous"/>}
+          {(data.author_name && !data.deleted) ? data.author_name : <FormattedMessage id="anonymous"/>}
         </span>
         <OverlayTrigger placement="top" overlay={this.dateTooltip(data)} delayShow={300}>
           <span className="hearing-comment-date">
@@ -352,6 +353,7 @@ class Comment extends React.Component {
         key={`$answer-for-question-${answer.question}`}
         loggedIn={!isEmpty(this.props.user)}
         onChange={this.handleAnswerChange}
+        canAnswer={this.props.canReply}
       />
     );
   };
@@ -385,7 +387,7 @@ class Comment extends React.Component {
             }}
           />
         </FormGroup>
-        <Button type="submit">Save</Button>
+        <Button type="submit"><FormattedMessage id="save"/></Button>
       </form>
     </React.Fragment>
   );
@@ -509,7 +511,11 @@ class Comment extends React.Component {
 
   renderCommentText = (data) => {
     if (!data.deleted) {
-      return <p>{nl2br(data.content)}</p>;
+      return (
+        <p className={isCommentEmpty(data) ? 'empty-comment-text' : null}>
+          {nl2br(data.content)}
+        </p>
+      );
     }
     if (data.deleted_by_type === "self") {
       return <FormattedMessage id="sectionCommentSelfDeletedMessage"/>;
@@ -564,11 +570,17 @@ class Comment extends React.Component {
         <div className="hearing-comment__comment-wrapper">
           {this.renderCommentHeader(isAdminUser)}
           {!this.props.isReply && this.renderCommentAnswers()}
-          <div className={classnames('hearing-comment-body', {'hearing-comment-body-disabled': data.deleted})}>
+          <div
+            className={classnames(
+              'hearing-comment-body',
+              {'hearing-comment-body-disabled': data.deleted},
+              {'hearing-comment-body-empty': (isCommentEmpty(data))}
+            )}
+          >
             {this.renderCommentText(data)}
           </div>
           <div className="hearing-comment__images">
-            {data.images
+            {(data.images && !data.deleted)
               ? data.images.map((image) =>
                 <a
                   className="hearing-comment-images-image"
@@ -587,7 +599,7 @@ class Comment extends React.Component {
               )
               : null}
           </div>
-          {data.geojson && (
+          {(data.geojson && !data.deleted) && (
             <div className="hearing-comment__map">
               <React.Fragment>
                 <Button
@@ -605,9 +617,10 @@ class Comment extends React.Component {
                 >
                   {data.geojson && (
                   <HearingMap
-                  hearing={{geojson: data.geojson}}
-                  mapContainer={this.state.mapContainer}
-                  mapSettings={{dragging: false}}
+                    hearing={{geojson: data.geojson}}
+                    mapContainer={this.state.mapContainer}
+                    mapSettings={{dragging: false}}
+                    style={{height: '250px', width: '100%'}}
                   />
                   )}
                 </div>

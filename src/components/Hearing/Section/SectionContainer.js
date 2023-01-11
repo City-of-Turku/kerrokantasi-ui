@@ -20,6 +20,7 @@ import SectionAttachment from './SectionAttachment';
 import SectionBrowser from '../../SectionBrowser';
 import SectionImage from './SectionImage';
 import SortableCommentList from '../../SortableCommentList';
+import LoadSpinner from '../../LoadSpinner';
 import config from '../../../config';
 import getAttr from '../../../utils/getAttr';
 import SubSectionsList from './SubSectionsList';
@@ -50,6 +51,7 @@ import {
 } from '../../../actions';
 
 import {getUser} from '../../../selectors/user';
+import classNames from 'classnames';
 import 'react-image-lightbox/style.css';
 
 export class SectionContainerComponent extends React.Component {
@@ -59,6 +61,9 @@ export class SectionContainerComponent extends React.Component {
     showLightbox: false,
     mapContainer: null,
     mapContainerMobile: null,
+    resultsMapContainer: null,
+    displayCommentResults: false,
+    loading: false,
     // Open on desktop, closed on mobile
     mainHearingDetailsOpen: typeof window !== 'undefined' && window.innerWidth >= 768,
     mainHearingProjectOpen: false,
@@ -134,10 +139,13 @@ export class SectionContainerComponent extends React.Component {
   handleSetMapContainerMobile = (mapContainerMobile) => {
     this.setState({ mapContainerMobile });
   }
+  handleSetResultsMapContainer = (resultsMapContainer) => {
+    this.setState({ resultsMapContainer });
+  }
 
   /**
    * When "Show replies" is pressed.
-   * Call the redecer to fetch sub comments and populate inside the specific comment
+   * Call the reducer to fetch sub comments and populate inside the specific comment
    */
   handleGetSubComments = (commentId, sectionId) => {
     this.props.getCommentSubComments(commentId, sectionId);
@@ -225,6 +233,54 @@ export class SectionContainerComponent extends React.Component {
     && Array.isArray(this.props.user.adminOrganizations)
     && this.props.user.adminOrganizations.includes(this.props.hearing.organization)
   )
+
+  toggleDisplayCommentResults = () => {
+    this.setState({displayCommentResults: !this.state.displayCommentResults});
+  }
+
+  toggleMapContainer = () => {
+    const {fetchAllComments, sections, sectionComments, hearing} = this.props;
+    this.setState({loading: true});
+    // contains sections that have comments that may include geojson data.
+    const sectionsWithComments = sections.reduce((acc, curr) => {
+      if (curr.n_comments && curr.type !== 'closure-info' && curr.commenting_map_tools !== 'none') {
+        acc.push({id: curr.id, count: curr.n_comments});
+      }
+      return acc;
+    }, []);
+    const sectionsMissingComments = sectionsWithComments.reduce((acc, curr) => {
+      if (!Object.keys(sectionComments).includes(curr.id)) {
+        // current section's comments haven't been fetched at all.
+        acc.push(curr.id);
+      } else if (sectionComments[curr.id].results.length < curr.count) {
+        // current section's comments were fetched but not all of them.
+        acc.push(curr.id);
+      }
+      return acc;
+    }, []);
+    if (sectionsMissingComments.length) {
+      // fetch ALL comments for each section that didn't have all comments.
+      sectionsMissingComments.forEach((section) => {
+        fetchAllComments(hearing.slug, section, '-created_at');
+      });
+    } else {
+      this.toggleDisplayCommentResults();
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const {sectionComments} = this.props;
+    if (prevProps.sectionComments !== sectionComments) {
+      // some section's comments were being fetched previously.
+      const previouslyFetching = Object.values(prevProps.sectionComments).some(section => section.isFetching);
+      // some section's comments are being fetched now.
+      const currentlyFetching = Object.values(sectionComments).some(section => section.isFetching);
+      if (previouslyFetching && !currentlyFetching && prevState.loading) {
+        // fetching is done and prevState was loading -> toggle displayCommentResults
+        this.toggleDisplayCommentResults();
+      }
+    }
+  }
 
   /**
    * If files are attached to the section, render the files section
@@ -398,6 +454,21 @@ export class SectionContainerComponent extends React.Component {
     );
   }
 
+  renderCommentsWrapper = () => {
+    const {hearing} = this.props;
+    const displayResults = hearing.closed && hearing.published && hearing.n_comments !== 0;
+    return (
+      <section
+        className="hearing-section comments-section"
+        id="comments-section"
+        tabIndex={-1}
+      >
+        {displayResults && this.renderCommentMapResults()}
+        {this.renderCommentsSection()}
+      </section>
+    );
+  }
+
   renderCommentsSection = () => {
     const {
       apiToken,
@@ -417,7 +488,7 @@ export class SectionContainerComponent extends React.Component {
     const section = sections.find(sec => sec.id === match.params.sectionId) || mainSection;
 
     return (
-      <section className="hearing-section comments-section" id="comments-section" tabIndex={-1}>
+      <React.Fragment>
         {reportUrl && this.renderReportDownload(reportUrl, userIsAdmin, hearing, apiToken, language)}
         <SortableCommentList
           section={section}
@@ -441,7 +512,7 @@ export class SectionContainerComponent extends React.Component {
           closed={hearing.closed}
           hearingGeojson={hearing.geojson}
         />
-      </section>
+      </React.Fragment>
     );
   }
 
@@ -614,8 +685,7 @@ export class SectionContainerComponent extends React.Component {
           }
 
           <SubSectionsList hearing={hearing} language={language} user={user} />
-
-          {this.renderCommentsSection()}
+          {this.renderCommentsWrapper()}
         </Col>
         {hearing.geojson && (
           <Col md={4} lg={3} lgPush={1} className="hidden-xs visible-sm visible-md visible-lg">
@@ -692,13 +762,87 @@ export class SectionContainerComponent extends React.Component {
           {this.renderSectionAbstract(section, language)}
           {this.renderSectionContent(section, language)}
           {this.renderSubSectionAttachments(section, language, published)}
-
           {showSectionBrowser && <SectionBrowser sectionNav={this.getSectionNav()} />}
-
-          {this.renderCommentsSection()}
+          {this.renderCommentsWrapper()}
         </Col>
       </React.Fragment>
     );
+  }
+  renderCommentMapResults = () => {
+    const { displayCommentResults, resultsMapContainer, loading: isLoading } = this.state;
+    const { sections, sectionComments } = this.props;
+    const mapAttrs = {
+      enablePopups: true,
+      isCommentPopup: true,
+    };
+    mapAttrs.hearings = sections.reduce((acc, curr) => {
+      if (sectionComments[curr.id]) {
+        const comments = sectionComments[curr.id].results.reduce((innerAcc, comment) => {
+          if (!comment.deleted && comment.geojson) {
+            const temp = {...comment};
+            temp.abstract = temp.content;
+            innerAcc.push(temp);
+          }
+          return innerAcc;
+        }, []);
+        acc.push(...comments);
+      }
+      return acc;
+    }, []);
+
+    return (
+      <div className="map-results">
+        <div>
+          <button
+            aria-controls="hearing-comment-map-results"
+            aria-expanded={displayCommentResults}
+            className="hearing-map-results-toggle-button btn-link"
+            onClick={this.toggleMapContainer}
+          >
+            <FormattedMessage id={displayCommentResults ? 'closeCommentMapResults' : 'showCommentMapResults'}>
+              {txt => txt}
+            </FormattedMessage>
+          </button>
+        </div>
+        <div
+          className={classNames('map-results-container', {'map-open': displayCommentResults})}
+          id="hearing-comment-map-results"
+        >
+          {isLoading && <LoadSpinner />}
+          <Collapse
+            in={displayCommentResults}
+            onEntered={this.stopLoading}
+            onExited={this.stopLoading}
+          >
+            <div className="accordion-content">
+              <div className="section-content-spacer">
+                {!isLoading &&
+                  <React.Fragment>
+                    {mapAttrs.hearings.length !== 0 && (
+                      <div className="hearing-map-container comments" ref={this.handleSetResultsMapContainer}>
+                        <HearingMap mapContainer={resultsMapContainer} {...mapAttrs} />
+                      </div>
+                    )}
+                    {!mapAttrs.hearings.length && (
+                      <FormattedMessage id="noCommentsWithMapMarkers">
+                        {txt => <p className="no-map-results">{txt}</p>}
+                      </FormattedMessage>
+                    )}
+                  </React.Fragment>
+                }
+              </div>
+            </div>
+          </Collapse>
+        </div>
+      </div>
+    );
+  }
+  /**
+   * Used by the Collapse component in renderCommentMapResults.
+   * Called when the collapse accordion is fully opened, and when it's closed.
+   */
+  stopLoading = () => {
+    this.setState({loading: false});
   }
 
   render() {
@@ -773,7 +917,9 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(fetchMoreSectionComments(sectionId, ordering, nextUrl))
   ),
 });
-
+SectionContainerComponent.defaultProps = {
+  mainSectionComments: {results: []},
+};
 SectionContainerComponent.propTypes = {
   apiToken: PropTypes.object,
   contacts: PropTypes.array,
@@ -793,6 +939,7 @@ SectionContainerComponent.propTypes = {
   postVote: PropTypes.func,
   postFlag: PropTypes.func,
   sections: PropTypes.array,
+  sectionComments: PropTypes.object,
   user: PropTypes.object,
 };
 

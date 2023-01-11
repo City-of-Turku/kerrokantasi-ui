@@ -1,7 +1,7 @@
-import {get, find, merge, includes} from 'lodash';
+import {find, get, includes, merge} from 'lodash';
 import moment from 'moment';
 
-import { initNewSection, SectionTypes, userCanComment } from './section';
+import {initNewSection, SectionTypes, userCanComment} from './section';
 import initAttr from './initAttr';
 import getAttr from './getAttr';
 import i18n from '../i18n';
@@ -67,6 +67,60 @@ export function isPublic(hearing) {
     }
   }
   return false;
+}
+
+/**
+ * Returns boolean that determines if a question is editable depending on if the hearing has comments and the
+ * general state of the hearing.
+ * @param {Object} hearing
+ * @returns {boolean}
+ */
+export function isEditableQuestion(hearing) {
+  const newHearing = !Object.keys(hearing).some(key => key === 'id');
+  // Immediately return true if creating a new hearing.
+  if (newHearing) { return true; }
+  const {published, closed} = hearing;
+  const now = moment();
+  const openAt = moment(hearing.open_at);
+  const closeAt = moment(hearing.close_at);
+
+  const state = {};
+  // hearing is a draft that has been approved and is waiting for publishing date.
+  state.draftPublishedWaiting = openAt >= now && published && closed;
+  // hearing is a draft that has not been approved for publishing.
+  state.draftNotPublished = !published && closed;
+  // hearing has been published and is open to the public.
+  state.publishedOpen = openAt <= now && closeAt >= now && published && !closed;
+  // hearing was previously open and published but is now unpublished.
+  state.wasPublished = !published && !closed;
+
+  // true if hearing.n_comments is not 0.
+  const commented = !!hearing.n_comments;
+  if (commented) {
+    // hearing contains sections that have questions.
+    const hasQuestions = hearing.sections.some((section) => section.questions && section.questions.length);
+    if (hasQuestions) {
+      /**
+       * Array consisting of the numbers of answers that each question has received.
+       * Example: hearing has 2 sections that each have a question but only one of them has received a comment.
+       * @example
+       * [0,1]
+       */
+      const questionAnswers = hearing.sections.reduce((acc, curr) => {
+        if (curr.questions && curr.questions.length) {
+          acc.push(...curr.questions.map(question => question.n_answers));
+        }
+        return acc;
+      }, []);
+      // None of the questions have any answers.
+      const notAnswered = questionAnswers.length && questionAnswers.every(question => question === 0);
+
+      // Return true if none of the questions have answered and at least one of the state values is true.
+      return notAnswered && Object.values(state).some(value => value);
+    }
+  }
+  // Return true if at least one of the state values is true.
+  return Object.values(state).some(value => value);
 }
 
 /**

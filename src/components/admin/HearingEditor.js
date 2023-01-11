@@ -17,7 +17,7 @@ import {
   closeHearing,
   closeHearingForm,
   createMapMarker,
-  deleteLastOption,
+  deleteOption,
   deleteSectionAttachment,
   deleteTemporaryQuestion,
   editQuestion,
@@ -164,6 +164,9 @@ class HearingEditor extends React.Component {
     if (validateFunction.slug(hearing.slug)) {
       localErrors[1].slug = formatMessage({id: 'validationHearingSlug'});
     }
+    if (validateFunction.slug_formatting(hearing.slug)) {
+      localErrors[1].slug = formatMessage({id: 'validationHearingSlugFormatting'});
+    }
     if (validateFunction.contact_persons(hearing.contact_persons)) {
       localErrors[1].contact_persons = formatMessage({id: 'validationHearingContactPersons'});
     }
@@ -186,9 +189,9 @@ class HearingEditor extends React.Component {
       }
     }
 
+    this.setState({errors: localErrors});
     // true if one of the keys in localErrors contain entries
     // eslint-disable-next-line no-unused-vars
-    this.setState({errors: localErrors});
     const containsError = Object.entries(localErrors).some(([k, v]) => Object.entries(v).length > 0);
     if (!containsError) {
       return dispatch(callbackAction(hearing));
@@ -255,9 +258,9 @@ class HearingEditor extends React.Component {
     dispatch(addOption(sectionId, questionId));
   }
 
-  deleteOption = (sectionId, questionId) => {
+  deleteOption = (sectionId, questionId, optionKey, useIndex) => {
     const {dispatch} = this.props;
-    dispatch(deleteLastOption(sectionId, questionId));
+    dispatch(deleteOption(sectionId, questionId, optionKey, useIndex));
   }
 
   getHearingForm() {

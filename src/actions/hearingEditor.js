@@ -37,7 +37,7 @@ export const EditorActions = {
   CLOSE_FORM: 'closeHearingForm',
   CLOSE_HEARING: 'closeHearing',
   CREATE_MAP_MARKER: 'createMapMarker',
-  DELETE_LAST_OPTION: 'deleteLastOption',
+  DELETE_OPTION: 'deleteOption',
   DELETE_TEMP_QUESTION: 'deleteTemporaryQuestion',
   EDIT_HEARING: 'changeHearing',
   EDIT_PHASE: 'changePhase',
@@ -397,9 +397,17 @@ export const deleteTemporaryQuestion = (sectionId, questionFrontId) => {
   return createAction(EditorActions.DELETE_TEMP_QUESTION)({sectionId, questionFrontId});
 };
 
-export const deleteLastOption = (sectionId, questionId, optionKey) => {
+/**
+ * Delete given option from question form.
+ * @param {string} sectionId id of the section that contains the question.
+ * @param {number|string} questionId id of the question that contains the option.
+ * @param {number} optionKey id or index of the options that is to be deleted.
+ * @param {boolean} [useOptionIndex=false] determines if optionKey should be handled as index when deleting option.
+ * @returns {function(*): *}
+ */
+export const deleteOption = (sectionId, questionId, optionKey, useOptionIndex) => {
   return dispatch => {
-    return dispatch(createAction(EditorActions.DELETE_LAST_OPTION)({sectionId, questionId, optionKey}));
+    return dispatch(createAction(EditorActions.DELETE_OPTION)({sectionId, questionId, optionKey, useOptionIndex}));
   };
 };
 

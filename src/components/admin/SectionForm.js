@@ -240,6 +240,7 @@ class SectionForm extends React.Component {
     const {
       addOption,
       deleteOption,
+      isEditableQuestion,
       isFirstSubsection,
       isLastSubsection,
       isPublic,
@@ -477,6 +478,7 @@ class SectionForm extends React.Component {
               onDeleteExistingQuestion={onDeleteExistingQuestion}
               lang={language}
               isPublic={isPublic}
+              isEditableQuestion={isEditableQuestion}
             />
           </div>
         )}
@@ -495,6 +497,7 @@ SectionForm.propTypes = {
   initMultipleChoiceQuestion: PropTypes.func,
   initSingleChoiceQuestion: PropTypes.func,
   intl: intlShape.isRequired,
+  isEditableQuestion: PropTypes.bool,
   isFirstSubsection: PropTypes.bool,
   isLastSubsection: PropTypes.bool,
   isPublic: PropTypes.bool,

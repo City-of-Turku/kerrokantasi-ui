@@ -4,7 +4,9 @@
   "main": "index.js",
   "scripts": {
     "start": "NODE_ENV=production node server",
-    "build": "rm -rf ./dist && node compile",
+    "start:win": "SET NODE_ENV=production&&node server",
+    "build": "NODE_ENV=production node compile",
+    "build:win": "SET NODE_ENV=production&&node compile",
     "fetch-plugins": "node deploy/fetch_plugins.js",
     "dev": "node server --dev --host 0.0.0.0",
     "lint": "eslint src server test",
@@ -45,6 +47,7 @@
     "body-parser": "^1.19.0",
     "bootstrap-sass": "^3.4.1",
     "classnames": "^2.3.1",
+    "clean-webpack-plugin": "^4.0.0",
     "codecov": "^3.8.1",
     "compression": "^1.7.4",
     "connect-history-api-fallback": "^1.6.0",
@@ -157,7 +160,6 @@
     "jsdom": "^16.5.0",
     "react-addons-test-utils": "^15.6.0",
     "react-test-renderer": "^16.8.6",
-    "react-test-utils": "0.0.1",
     "webpack-bundle-analyzer": "^2.9.1"
   },
   "jest": {

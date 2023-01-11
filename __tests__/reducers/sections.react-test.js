@@ -65,6 +65,17 @@ const INITIAL_STATE = {
   }};
 
 describe('sections', () => {
+  /**
+   * Calls store.dispatch(actionObj) and returns getState().byId[sectionId]
+   * @param store
+   * @param {string} sectionId
+   * @param {object} actionObj
+   * @returns {*}
+   */
+  function dispatcher(store, sectionId, actionObj = {}) {
+    store.dispatch(actionObj);
+    return store.getState().byId[sectionId];
+  }
   describe('HEARING', () => {
     let store;
     const entities = {
@@ -105,8 +116,9 @@ describe('sections', () => {
       const value = {fi: 'modified title'};
 
       expect(store.getState().byId[sectionID][field]).toEqual(INITIAL_STATE.byId[sectionID][field]);
-      store.dispatch({type: EditorActions.EDIT_SECTION, payload: {sectionID, field, value}});
-      expect(store.getState().byId[sectionID][field]).toEqual(value);
+      const expectedValue = dispatcher(store, sectionID,
+        {type: EditorActions.EDIT_SECTION, payload: {sectionID, field, value}})[field];
+      expect(expectedValue).toEqual(value);
     });
     test('ADD_SECTION', () => {
       const section = {frontId: 'xyz'};
@@ -135,14 +147,17 @@ describe('sections', () => {
       const sectionID = INITIAL_STATE.all[0];
       let field = 'alt';
       let value = 'alternative text';
-      expect(store.getState().byId[sectionID].images).toEqual(INITIAL_STATE.byId[sectionID].images);
-      store.dispatch({type: EditorActions.EDIT_SECTION_MAIN_IMAGE, payload: {sectionID, field, value}});
-      expect(store.getState().byId[sectionID].images[0][field]).toEqual(value);
+      let expectedImages = store.getState().byId[sectionID].images;
+      expect(expectedImages).toEqual(INITIAL_STATE.byId[sectionID].images);
+      expectedImages = dispatcher(store, sectionID,
+        {type: EditorActions.EDIT_SECTION_MAIN_IMAGE, payload: {sectionID, field, value}}).images[0];
+      expect(expectedImages[field]).toEqual(value);
       field = 'image';
       value = 'url key should be empty string';
-      store.dispatch({type: EditorActions.EDIT_SECTION_MAIN_IMAGE, payload: {sectionID, field, value}});
-      expect(store.getState().byId[sectionID].images[0][field]).toEqual(value);
-      expect(store.getState().byId[sectionID].images[0].url).toEqual('');
+      expectedImages = dispatcher(store, sectionID,
+        {type: EditorActions.EDIT_SECTION_MAIN_IMAGE, payload: {sectionID, field, value}}).images[0];
+      expect(expectedImages[field]).toEqual(value);
+      expect(expectedImages.url).toEqual('');
     });
   });
   describe('ATTACHMENT', () => {
@@ -159,56 +174,66 @@ describe('sections', () => {
     test('ADD_ATTACHMENT', () => {
       const attachment = {id: 123};
       expect(store.getState().byId[sectionId].files).toEqual([]);
-      store.dispatch({type: EditorActions.ADD_ATTACHMENT, payload: {sectionId, attachment}});
-      expect(store.getState().byId[sectionId].files).toEqual([attachment]);
+      const expectedFiles = dispatcher(store, sectionId,
+        {type: EditorActions.ADD_ATTACHMENT, payload: {sectionId, attachment}}).files;
+      expect(expectedFiles).toEqual([attachment]);
     });
 
     test('ORDER_ATTACHMENTS', () => {
       const FILES = [{id: 123, ordering: 5}, {id: 456, ordering: 1}, {id: 683, ordering: 3}];
       let attachment;
+      let expectedFiles;
       FILES.forEach((file) => {
         attachment = file;
-        store.dispatch({type: EditorActions.ADD_ATTACHMENT, payload: {sectionId, attachment}});
+        expectedFiles = dispatcher(store, sectionId,
+          {type: EditorActions.ADD_ATTACHMENT, payload: {sectionId, attachment}}).files;
       });
       const attachments = [];
 
       // files should be in the order they were added
-      expect(store.getState().byId[sectionId].files).toEqual(FILES);
-      // order files in descending order according to ordering key
-      store.dispatch({type: EditorActions.ORDER_ATTACHMENTS, payload: {sectionId, attachments}});
-      expect(store.getState().byId[sectionId].files).toEqual([FILES[1], FILES[2], FILES[0]]);
+      expect(expectedFiles).toEqual(FILES);
+      // order files in descending order according to the ordering key
+      expectedFiles = dispatcher(store, sectionId,
+        {type: EditorActions.ORDER_ATTACHMENTS, payload: {sectionId, attachments}}).files;
+      expect(expectedFiles).toEqual([FILES[1], FILES[2], FILES[0]]);
     });
 
     test('EDIT_SECTION_ATTACHMENT', () => {
       const FILES = [{id: 123, title: 'first'}, {id: 456, title: 'is this second?'}, {id: 683, title: 'third'}];
       let attachment;
+      let expectedFiles;
       FILES.forEach((file) => {
         attachment = file;
-        store.dispatch({type: EditorActions.ADD_ATTACHMENT, payload: {sectionId, attachment}});
+        expectedFiles = dispatcher(store, sectionId,
+          {type: EditorActions.ADD_ATTACHMENT, payload: {sectionId, attachment}}).files;
       });
       // second files title should be default
-      expect(store.getState().byId[sectionId].files[1].title).toEqual('is this second?');
+      expect(expectedFiles[1].title).toEqual('is this second?');
       attachment = {id: 456, title: 'this is correct'};
       // update the second files title
-      store.dispatch({type: EditorActions.EDIT_SECTION_ATTACHMENT, payload: {sectionId, attachment}});
-      expect(store.getState().byId[sectionId].files[1].title).toEqual('this is correct');
+      expectedFiles = dispatcher(store, sectionId,
+        {type: EditorActions.EDIT_SECTION_ATTACHMENT, payload: {sectionId, attachment}}).files;
+      expect(expectedFiles[1].title).toEqual('this is correct');
     });
 
     test('DELETE_ATTACHMENT', () => {
       const FILES = [{id: 123, title: 'first'}, {id: 456, title: 'is this second?'}];
       let attachment;
+      let expectedFiles;
       FILES.forEach((file) => {
         attachment = file;
-        store.dispatch({type: EditorActions.ADD_ATTACHMENT, payload: {sectionId, attachment}});
+        expectedFiles = dispatcher(store, sectionId,
+          {type: EditorActions.ADD_ATTACHMENT, payload: {sectionId, attachment}}).files;
       });
       // should contain the added files
-      expect(store.getState().byId[sectionId].files).toHaveLength(2);
-      expect(store.getState().byId[sectionId].files).toEqual(FILES);
+      expect(expectedFiles).toHaveLength(2);
+      expect(expectedFiles).toEqual(FILES);
       attachment = {id: 123};
-      store.dispatch({type: EditorActions.DELETE_ATTACHMENT, payload: {sectionId, attachment}});
+      expectedFiles = dispatcher(store, sectionId,
+        {type: EditorActions.DELETE_ATTACHMENT, payload: {sectionId, attachment}}).files;
       // should only contain the second file that was added as the first one was deleted
-      expect(store.getState().byId[sectionId].files).toHaveLength(1);
-      expect(store.getState().byId[sectionId].files).toEqual([FILES[1]]);
+      expect(expectedFiles).toHaveLength(1);
+      expect(expectedFiles).toEqual([FILES[1]]);
     });
   });
 
@@ -229,8 +254,7 @@ describe('sections', () => {
       // questionCount is 2 by default
       expect(section.questions).toHaveLength(questionCount);
       // add a single choice question
-      store.dispatch({type: EditorActions.INIT_SINGLECHOICE_QUESTION, payload: {sectionId}});
-      section = store.getState().byId[sectionId];
+      section = dispatcher(store, sectionId, {type: EditorActions.INIT_SINGLECHOICE_QUESTION, payload: {sectionId}});
       // amount of questions should be default + 1
       expect(section.questions).toHaveLength(questionCount + 1);
       // last question(the added one) should have single-choice type
@@ -239,8 +263,7 @@ describe('sections', () => {
     test('INIT_MULTIPLECHOICE_QUESTION', () => {
       expect(section.questions).toHaveLength(questionCount);
       // add a multiple choice question
-      store.dispatch({type: EditorActions.INIT_MULTIPLECHOICE_QUESTION, payload: {sectionId}});
-      section = store.getState().byId[sectionId];
+      section = dispatcher(store, sectionId, {type: EditorActions.INIT_MULTIPLECHOICE_QUESTION, payload: {sectionId}});
       // amount of questions should be default + 1
       expect(section.questions).toHaveLength(questionCount + 1);
       // last question(the added one) should have multiple-choice type
@@ -248,20 +271,20 @@ describe('sections', () => {
     });
     test('CLEAR_QUESTIONS', () => {
       expect(section.questions).toHaveLength(questionCount);
-      store.dispatch({type: EditorActions.CLEAR_QUESTIONS, payload: {sectionId}});
-      section = store.getState().byId[sectionId];
+      section = dispatcher(store, sectionId, {type: EditorActions.CLEAR_QUESTIONS, payload: {sectionId}});
       expect(section.questions).toHaveLength(0);
     });
     test('DELETE_TEMP_QUESTION', () => {
       expect(section.questions).toHaveLength(questionCount);
+
       // add a single choice question, newly added questions have frontId key instead of the id key
-      store.dispatch({type: EditorActions.INIT_SINGLECHOICE_QUESTION, payload: {sectionId}});
-      section = store.getState().byId[sectionId];
+      section = dispatcher(store, sectionId, {type: EditorActions.INIT_SINGLECHOICE_QUESTION, payload: {sectionId}});
       expect(section.questions).toHaveLength(questionCount + 1);
       const questionFrontId = section.questions[2].frontId;
+
       // delete the newly added question
-      store.dispatch({type: EditorActions.DELETE_TEMP_QUESTION, payload: {sectionId, questionFrontId}});
-      section = store.getState().byId[sectionId];
+      section = dispatcher(store, sectionId,
+        {type: EditorActions.DELETE_TEMP_QUESTION, payload: {sectionId, questionFrontId}});
       expect(section.questions).toHaveLength(questionCount);
     });
     test('DELETE_EXISTING_QUESTION', () => {
@@ -269,9 +292,10 @@ describe('sections', () => {
       expect(section.questions).toEqual(INITIAL_STATE.byId[sectionId].questions);
       // questions that have been saved use/have the id key
       const questionId = section.questions[0].id;
+
       // delete the first question
-      store.dispatch({type: EditorActions.DELETE_EXISTING_QUESTION, payload: {sectionId, questionId}});
-      section = store.getState().byId[sectionId];
+      section = dispatcher(store, sectionId,
+        {type: EditorActions.DELETE_EXISTING_QUESTION, payload: {sectionId, questionId}});
       expect(section.questions).toHaveLength(questionCount - 1);
       // only the second question should remain
       expect(section.questions).toEqual([INITIAL_STATE.byId[sectionId].questions[1]]);
@@ -281,16 +305,12 @@ describe('sections', () => {
       let fieldType = 'text'; // update the questions text
       let value = {en: 'WHICH IS IT?!'};
       let optionKey = 1; // key of the option that is updated
+
       // edit question text
       expect(section.questions[0].text)
         .toEqual(INITIAL_STATE.byId[sectionId].questions[0].text);
-      store.dispatch(
-        {
-          type: EditorActions.EDIT_QUESTION,
-          payload: {fieldType, sectionId, questionId, optionKey, value}
-        }
-      );
-      section = store.getState().byId[sectionId];
+      section = dispatcher(store, sectionId,
+        {type: EditorActions.EDIT_QUESTION, payload: {fieldType, sectionId, questionId, optionKey, value}});
       expect(section.questions[0].text).toEqual(value);
 
       // edit option text
@@ -303,34 +323,57 @@ describe('sections', () => {
       // expect option text to be initial state
       expect(section.questions[1].options[optionKey].text)
         .toEqual(INITIAL_STATE.byId[sectionId].questions[1].options[optionKey].text);
-      store.dispatch(
-        {
-          type: EditorActions.EDIT_QUESTION,
-          payload: {fieldType, sectionId, questionId, optionKey, value}
-        }
-      );
-      section = store.getState().byId[sectionId];
+      section = dispatcher(store, sectionId,
+        {type: EditorActions.EDIT_QUESTION, payload: {fieldType, sectionId, questionId, optionKey, value}});
+
       // expect option text to be value
       expect(section.questions[1].options[optionKey].text).toEqual(value);
     });
-    test('ADD_OPTION AND DELETE_LAST_OPTION', () => {
+    test('ADD_OPTION', () => {
       const questionId = store.getState().byId[sectionId].questions[0].id;
       // add 2 options
       expect(section.questions[0].options).toHaveLength(questionCount);
-      store.dispatch({type: EditorActions.ADD_OPTION, payload: {sectionId, questionId}});
-      section = store.getState().byId[sectionId];
-      expect(section.questions[0].options).toHaveLength(questionCount + 1);
-      store.dispatch({type: EditorActions.ADD_OPTION, payload: {sectionId, questionId}});
-      section = store.getState().byId[sectionId];
-      expect(section.questions[0].options).toHaveLength(questionCount + 2);
 
-      // delete 2 options
-      store.dispatch({type: EditorActions.DELETE_LAST_OPTION, payload: {sectionId, questionId}});
-      section = store.getState().byId[sectionId];
+      section = dispatcher(store, sectionId,
+        {type: EditorActions.ADD_OPTION, payload: {sectionId, questionId}});
       expect(section.questions[0].options).toHaveLength(questionCount + 1);
-      store.dispatch({type: EditorActions.DELETE_LAST_OPTION, payload: {sectionId, questionId}});
-      section = store.getState().byId[sectionId];
-      expect(section.questions[0].options).toHaveLength(questionCount);
+
+      section = dispatcher(store, sectionId,
+        {type: EditorActions.ADD_OPTION, payload: {sectionId, questionId}});
+      expect(section.questions[0].options).toHaveLength(questionCount + 2);
+    });
+    test('DELETE_OPTION', () => {
+      let question = store.getState().byId[sectionId].questions[1];
+      const questionId = store.getState().byId[sectionId].questions[1].id;
+      // the second question has 5 options by default.
+      expect(question.options.length).toBe(5);
+
+      // delete the third option in the options array using the optionKey as key.
+      let optionKey = 33;
+      let useOptionIndex = false;
+      question = dispatcher(store, sectionId,
+        {type: EditorActions.DELETE_OPTION, payload: {sectionId, questionId, optionKey, useOptionIndex}})
+        .questions[1];
+      expect(question.options.length).toBe(4);
+
+      // add new option, newly added options don't have an id key.
+      store.dispatch({type: EditorActions.ADD_OPTION, payload: {sectionId, questionId}});
+      const fieldType = 'option';
+      const value = {en: 'newly added value'};
+      optionKey = 4;
+      // add some text to the new option.
+      question = dispatcher(store, sectionId,
+        {type: EditorActions.EDIT_QUESTION, payload: {fieldType, sectionId, questionId, optionKey, value}})
+        .questions[1];
+      expect(question.options.length).toBe(5);
+
+      // remove the newly added option, optionKey is now used as index instead of key.
+      optionKey = 4;
+      useOptionIndex = true;
+      question = dispatcher(store, sectionId,
+        {type: EditorActions.DELETE_OPTION, payload: {sectionId, questionId, optionKey, useOptionIndex}})
+        .questions[1];
+      expect(question.options.length).toBe(4);
     });
   });
 });

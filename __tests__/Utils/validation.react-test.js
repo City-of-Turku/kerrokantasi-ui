@@ -39,6 +39,22 @@ describe('validateFunction', () => {
     });
   });
 
+  describe('slug formatting validation', () => {
+    test('return true if hearingSlug contains unallowed chars', () => {
+      expect(validationFunction.slug_formatting('ääkkösiä')).toBe(true);
+      expect(validationFunction.slug_formatting('Åbo')).toBe(true);
+      expect(validationFunction.slug_formatting('test/abc')).toBe(true);
+      expect(validationFunction.slug_formatting('test abc')).toBe(true);
+      expect(validationFunction.slug_formatting(' #test')).toBe(true);
+    });
+    test('return false if hearingSlug contains only allowed chars', () => {
+      expect(validationFunction.slug_formatting('test123')).toBe(false);
+      expect(validationFunction.slug_formatting('test_123')).toBe(false);
+      expect(validationFunction.slug_formatting('test-123')).toBe(false);
+      expect(validationFunction.slug_formatting('test_123_321-abc')).toBe(false);
+    });
+  });
+
   describe('contact persons validation', () => {
     test('return true if contactPersons array is empty', () => {
       expect(validationFunction.contact_persons([])).toBe(true);
