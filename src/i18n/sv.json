@@ -100,6 +100,8 @@
   "headerUserNavLabel": "Användarmeny",
   "headerWriteCommentLink": "Skriv en kommentar",
   "hearing": "Hörande",
+  "hearingAuthMethodRestrictionsHelp": "Hörandet syns endast till användare som har loggat in med de valda autentiseringsmetoder. Om inga autentiseringsmetoder är valda så syns hörandet till alla användare.",
+  "hearingAuthMethodRestrictionsLabel": "Begränsa hörandet synlighet genom autentiseringsmetoder",
   "hearingAvailable-en": "Hearing available",
   "hearingAvailable-fi": "Kuuleminen saatavilla",
   "hearingAvailable-sv": "Hörandet tillgängligt",

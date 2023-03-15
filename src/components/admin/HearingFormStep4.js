@@ -20,6 +20,8 @@ import {initNewSection, SectionTypes} from '../../utils/section';
 import MultiLanguageTextField, {TextFieldTypes} from '../forms/MultiLanguageTextField';
 import {hearingShape} from '../../types';
 import {addSection} from '../../actions/hearingEditor';
+import config from '../../config';
+import HearingAuthMethods from './HearingAuthMethods';
 
 
 class HearingFormStep4 extends React.Component {
@@ -30,7 +32,21 @@ class HearingFormStep4 extends React.Component {
     this.onChangeStart = this.onChangeStart.bind(this);
     this.onChangeEnd = this.onChangeEnd.bind(this);
     this.onClosureSectionChange = this.onClosureSectionChange.bind(this);
+    this.onChangeAuthMethods = this.onChangeAuthMethods.bind(this);
+
     moment.locale("fi-FI");
+    this.state = {
+      authMethods: []
+    };
+  }
+
+  componentDidMount() {
+    fetch(`${config.apiBaseUrl}/v1/auth_method/`)
+      .then(res => (res.status === 404 ? [] : res.json()))
+      .catch(err => { console.error(err); })
+      .then(data => {
+        this.setState({authMethods: data.results || []});
+      });
   }
 
   onClosureSectionChange(value) {
@@ -59,6 +75,10 @@ class HearingFormStep4 extends React.Component {
       const manualDate = moment(datetime, 'DD-MM-YYYY');
       this.props.onHearingChange("close_at", moment(manualDate, 'llll').toISOString());
     }
+  }
+
+  onChangeAuthMethods(authMethods) {
+    this.props.onHearingChange("visible_for_auth_methods", authMethods);
   }
 
   formatDateTime(datetime) {
@@ -117,6 +137,13 @@ class HearingFormStep4 extends React.Component {
           fieldType={TextFieldTypes.TEXTAREA}
           languages={hearingLanguages}
         />
+        {this.state.authMethods.length > 0 && (
+          <HearingAuthMethods
+            authMethodOptions={this.state.authMethods}
+            hearingAuthMethods={hearing.visible_for_auth_methods || []}
+            onChange={this.onChangeAuthMethods}
+          />
+        )}
         <div className="step-footer">
           <Button
             bsStyle="default"
@@ -141,6 +168,7 @@ HearingFormStep4.propTypes = {
   formatMessage: PropTypes.func
 };
 
+export {HearingFormStep4 as UnconnectedHearingFormStep4};
 const WrappedHearingFormStep4 = connect()(injectIntl(HearingFormStep4));
 
 export default WrappedHearingFormStep4;

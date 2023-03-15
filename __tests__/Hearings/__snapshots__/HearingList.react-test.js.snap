@@ -165,6 +165,8 @@ exports[`HearingsList component should render as expected 1`] = `
                   "hearing": "Kuuleminen",
                   "hearingAbstract": "Lyhyt johdanto",
                   "hearingArea": "Jos kuuleminen ei koske koko kaupunkia, piirrä kuulemisen tarkka alue kartalle",
+                  "hearingAuthMethodRestrictionsHelp": "Kuuleminen näkyy ainoastaan käyttäjille, jotka ovat kirjautuneet valittujen tunnistustapojen välityksellä. Ilman valintoja kuuleminen näkyy kaikille.",
+                  "hearingAuthMethodRestrictionsLabel": "Rajoita kuulemisen näkyvyys tunnistustavalla",
                   "hearingAvailable-en": "Hearing available",
                   "hearingAvailable-fi": "Kuuleminen saatavilla",
                   "hearingAvailable-sv": "Hörandet tillgängligt",

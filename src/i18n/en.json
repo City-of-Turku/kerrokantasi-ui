@@ -104,6 +104,8 @@
   "headerUserNavLabel": "User menu",
   "headerWriteCommentLink": "Write a comment",
   "hearing": "Hearing",
+  "hearingAuthMethodRestrictionsHelp": "Hearing can only be seen by users who have logged in with selected authentication methods. Hearing can be seen by everyone when none have been selected.",
+  "hearingAuthMethodRestrictionsLabel": "Restrict hearing visibility by authentication methods",
   "hearingAvailable-en": "Hearing available",
   "hearingAvailable-fi": "Kuuleminen saatavilla",
   "hearingAvailable-sv": "Hörandet tillgängligt",
