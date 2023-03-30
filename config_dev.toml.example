@@ -81,3 +81,23 @@ city_config="cities/helsinki"
 # String value that is considered as an empty comment
 # Default: '-'
 # empty_comment_string=
+
+# Configuration of additional WMS layers for all the maps.
+# WMS base URL. Leave empty/default if you don't want to use WMS layers.
+# Default: ""
+# wms_base_url=
+
+# WMS attribution href string for example:
+# "&copy; <a href='http://osm.org/copyright' rel='noreferrer' target='_blank'>OpenStreetMap</a> contributors"
+# Default: ""
+# wms_attribution=
+
+# Object information about each layer to be used in wms layer array.
+# layer_name acts like an id of an wms layer. Localized names are
+# for users see and use to select desired layer.
+# Example template for one layer object in wms_layer array:
+# [[wms_layers]]
+# layer_name=""
+# name_fi=""
+# name_sv=""
+# name_en=""

@@ -2,6 +2,7 @@ import React from 'react';
 import {shallow} from 'enzyme';
 
 import {UnconnectedHearingFormStep3} from "../../src/components/admin/HearingFormStep3";
+import MapLayers from '../../src/components/mapLayers/MapLayers';
 
 
 const generateCoordinates = () => {
@@ -25,12 +26,24 @@ const defaultProps = {
   onHearingChange: () => {},
   onAddMapMarker: () => {},
   onAddMapMarkersToCollection: () => {},
-  onCreateMapMarker: () => {}
+  onCreateMapMarker: () => {},
+  language: 'fi',
+  isHighContrast: false,
 };
 describe('HearingFormStep3', () => {
   function getWrapper(props) {
     return shallow(<UnconnectedHearingFormStep3 {...defaultProps} {...props} />);
   }
+
+  describe('renders', () => {
+    test('MapLayers', () => {
+      const mapLayers = getWrapper().find(MapLayers);
+      expect(mapLayers).toHaveLength(1);
+      expect(mapLayers.prop('language')).toBe(defaultProps.language);
+      expect(mapLayers.prop('isHighContrast')).toBe(defaultProps.isHighContrast);
+    });
+  });
+
   describe('methods', () => {
     describe('onDrawCreated', () => {
       let mockAddedPoint;

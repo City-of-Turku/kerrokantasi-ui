@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {getHearingURL} from '../utils/hearing';
 import getAttr from '../utils/getAttr';
 import Leaflet, { LatLng } from 'leaflet';
-import { Polygon, Marker, Polyline, Map, TileLayer, FeatureGroup, Popup, GeoJSON } from 'react-leaflet';
+import { Polygon, Marker, Polyline, Map, FeatureGroup, Popup, GeoJSON } from 'react-leaflet';
 import { connect } from 'react-redux';
 import nl2br from 'react-nl2br';
 
@@ -13,9 +13,7 @@ import leafletMarkerRetinaIconUrl from '../../assets/images/leaflet/marker-icon-
 import leafletMarkerShadowUrl from '../../assets/images/leaflet/marker-shadow.png';
 /* eslint-disable import/no-unresolved */
 import localization from '@city-i18n/localization.json';
-import urls from '@city-assets/urls.json';
-import { getCorrectContrastMapTileUrl } from '../utils/map';
-/* eslint-enable import/no-unresolved */
+import MapLayers from './mapLayers/MapLayers';
 
 class OverviewMap extends React.Component {
   state = {
@@ -252,7 +250,7 @@ class OverviewMap extends React.Component {
 
   render() {
     if (typeof window === "undefined") return null;
-    const { hearings} = this.props;
+    const { hearings, isHighContrast } = this.props;
     const contents = this.getHearingMapContent(hearings);
     if (!contents.length && this.props.hideIfEmpty) {
       return null;
@@ -267,11 +265,7 @@ class OverviewMap extends React.Component {
         scrollWheelZoom={false}
         {...this.props.mapSettings}
       >
-        <TileLayer
-          url={getCorrectContrastMapTileUrl(urls.rasterMapTiles,
-            urls.highContrastRasterMapTiles, this.props.isHighContrast, this.context.language)}
-          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        />
+        <MapLayers language={this.context.language} isHighContrast={isHighContrast}/>
         <FeatureGroup
           ref={(input) => {
           if (!input) return;

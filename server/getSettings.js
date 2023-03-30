@@ -39,6 +39,12 @@ const defaults = {
   enable_response_compression: false,
   // String value that is considered as an empty comment
   empty_comment_string: '-',
+  // Base URL string for additional WMS layers for all maps
+  wms_base_url: '',
+  // WMS attribution string
+  wms_attribution: '',
+  // Array of WMS layer objects
+  wms_layers: [],
 };
 
 const optionalKeys = [

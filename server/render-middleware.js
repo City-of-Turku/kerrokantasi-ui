@@ -52,6 +52,9 @@ function renderHTMLSkeleton(req, res, settings) {
         adminHelpUrl={settings.admin_help_url}
         enableResponseCompression={settings.enable_response_compression}
         emptyCommentString={settings.empty_comment_string}
+        wmsBaseUrl={settings.wms_base_url}
+        wmsAttribution={settings.wms_attribution}
+        wmsLayers={settings.wms_layers}
       />
     );
     res.status(200).send('<!DOCTYPE html>' + html);
