@@ -23,6 +23,9 @@ const config = {
   adminHelpUrl: typeof window !== 'undefined' ? window.ADMIN_HELP_URL : "",
   enableResponseCompression: typeof window !== 'undefined' ? window.ENABLE_RESPONSE_COMPRESSION : false,
   emptyCommentString: typeof window !== 'undefined' ? window.EMPTY_COMMENT_STRING : "",
+  wmsBaseUrl: typeof window !== 'undefined' ? window.WMS_BASE_URL : "",
+  wmsAttribution: typeof window !== 'undefined' ? window.WMS_ATTRIBUTION : "",
+  wmsLayers: typeof window !== 'undefined' ? window.WMS_LAYERS : [],
 };
 
 export default config;

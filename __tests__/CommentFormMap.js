@@ -2,12 +2,13 @@ import React from 'react';
 
 import CommentFormMap from "../src/components/CommentFormMap/CommentFormMap";
 import { shallow } from 'enzyme';
-import {Map, TileLayer, FeatureGroup} from 'react-leaflet';
+import {Map, FeatureGroup} from 'react-leaflet';
 import {EditControl} from 'react-leaflet-draw';
 import Leaflet from 'leaflet';
 import leafletMarkerIconUrl from "../assets/images/leaflet/marker-icon.png";
 import leafletMarkerShadowUrl from "../assets/images/leaflet/marker-shadow.png";
 import leafletMarkerRetinaIconUrl from "../assets/images/leaflet/marker-icon-2x.png";
+import MapLayers from '../src/components/mapLayers/MapLayers';
 
 const defaultProps = {
   center: {type: 'Point', coordinates: [60.451744, 22.266601]},
@@ -18,6 +19,7 @@ const defaultProps = {
   tools: 'all',
   language: 'fi',
   mapBounds: null,
+  isHighContrast: false,
 };
 
 function setDrawOptions(options) {
@@ -64,12 +66,12 @@ describe('src/components/CommentFormMap/CommentFormMap.js', () => {
         expect(element.prop('maxBounds')).toBeDefined();
       });
     });
-    describe('TileLayer', () => {
+    describe('MapLayers', () => {
       test('with correct props', () => {
-        const element = getWrapper().find(TileLayer);
+        const element = getWrapper().find(MapLayers);
         expect(element).toHaveLength(1);
-        expect(element.prop('url')).toEqual(defaultProps.mapTileUrl);
-        expect(element.prop('attribution')).toBeDefined();
+        expect(element.prop('language')).toBe(defaultProps.language);
+        expect(element.prop('isHighContrast')).toBe(defaultProps.isHighContrast);
       });
     });
     describe('FeatureGroup', () => {
@@ -100,4 +102,4 @@ describe('src/components/CommentFormMap/CommentFormMap.js', () => {
       });
     });
   });
-})
+});

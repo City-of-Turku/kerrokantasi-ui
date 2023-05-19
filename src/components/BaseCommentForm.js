@@ -26,11 +26,8 @@ import {
 } from "../utils/section";
 import {Polygon, GeoJSON, Polyline, Circle} from 'react-leaflet';
 // eslint-disable-next-line import/no-unresolved
-import urls from '@city-assets/urls.json';
-// eslint-disable-next-line import/no-unresolved
 import localization from '@city-i18n/localization.json';
 import leafletMarkerIconUrl from '../../assets/images/leaflet/marker-icon.png';
-import {getCorrectContrastMapTileUrl} from "../utils/map";
 import Leaflet, {LatLng} from 'leaflet';
 import leafletMarkerShadowUrl from "../../assets/images/leaflet/marker-shadow.png";
 import leafletMarkerRetinaIconUrl from "../../assets/images/leaflet/marker-icon-2x.png";
@@ -473,14 +470,10 @@ export class BaseCommentForm extends React.Component {
     return center;
   }
 
-  getMapContrastTiles() {
-    const {isHighContrast, language} = this.props;
-    return getCorrectContrastMapTileUrl(urls.rasterMapTiles,
-      urls.highContrastRasterMapTiles, isHighContrast, language);
-  }
-
   render() {
-    const {language, section, onChangeAnswers, answers, loggedIn, closed, user, isReply, canComment} = this.props;
+    const {
+      language, section, onChangeAnswers, answers, loggedIn, closed, user, isReply, canComment, isHighContrast
+    } = this.props;
     if (!this.props.overrideCollapse && this.state.collapsed) {
       return (
         <Button onClick={this.toggle.bind(this)} bsStyle="primary" bsSize="large" block>
@@ -573,12 +566,12 @@ export class BaseCommentForm extends React.Component {
                 <CommentFormMap
                   center={this.getMapCenter()}
                   mapBounds={localization.mapBounds || null}
-                  mapTileUrl={this.getMapContrastTiles()}
                   onDrawCreate={this.onDrawCreate}
                   onDrawDelete={this.onDrawDelete}
                   contents={this.getMapBorder()}
                   tools={section.commenting_map_tools}
                   language={language}
+                  isHighContrast={isHighContrast}
                 />
               </div>
               <FormGroup>

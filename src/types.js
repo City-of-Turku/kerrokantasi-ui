@@ -33,6 +33,12 @@ export const translatedShape = PropTypes.oneOfType([
   PropTypes.string
 ]);
 
+export const AuthMethodShape = PropTypes.shape({
+  id: PropTypes.number,
+  name: PropTypes.string,
+  amr: PropTypes.string,
+});
+
 export const labelShape = PropTypes.shape({
   id: PropTypes.number,
   label: translatedShape,

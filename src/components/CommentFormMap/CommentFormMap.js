@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Map, TileLayer, FeatureGroup} from "react-leaflet";
+import {Map, FeatureGroup} from "react-leaflet";
 import leafletMarkerIconUrl from '../../../assets/images/leaflet/marker-icon.png';
 import leafletMarkerShadowUrl from '../../../assets/images/leaflet/marker-shadow.png';
 import leafletMarkerRetinaIconUrl from '../../../assets/images/leaflet/marker-icon-2x.png';
 import Leaflet from 'leaflet';
 import getTranslatedTooltips from "../../utils/getTranslatedTooltips";
 import {EditControl} from 'react-leaflet-draw';
+import MapLayers from '../mapLayers/MapLayers';
 
 /**
  * If a city-specific configuration is in use then
@@ -42,7 +43,7 @@ class CommentFormMap extends React.Component {
     return this.props.mapBounds;
   }
   render() {
-    const {onDrawCreate, onDrawDelete, tools} = this.props;
+    const {onDrawCreate, onDrawDelete, tools, language, isHighContrast} = this.props;
     // below checks if all commenting map tools are enabled in this section
     // if enabled then rectangle and polygon tools are also available in addition to the marker
     const allToolsEnabled = tools === 'all';
@@ -56,10 +57,7 @@ class CommentFormMap extends React.Component {
         style={{height: 300, width: '100%'}}
         maxBounds={(this.getMapBounds())}
       >
-        <TileLayer
-          url={this.props.mapTileUrl}
-          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        />
+        <MapLayers language={language} isHighContrast={isHighContrast}/>
         <FeatureGroup
           ref={(input) => {
             if (!input) return;
@@ -102,12 +100,12 @@ class CommentFormMap extends React.Component {
 }
 CommentFormMap.propTypes = {
   center: PropTypes.object,
-  mapTileUrl: PropTypes.string,
   mapBounds: PropTypes.array,
   onDrawCreate: PropTypes.func,
   onDrawDelete: PropTypes.func,
   contents: PropTypes.any,
   tools: PropTypes.string,
   language: PropTypes.string,
+  isHighContrast: PropTypes.bool,
 };
 export default CommentFormMap;

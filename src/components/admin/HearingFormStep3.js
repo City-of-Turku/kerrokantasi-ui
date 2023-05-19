@@ -18,12 +18,9 @@ import leafletMarkerRetinaIconUrl from '../../../assets/images/leaflet/marker-ic
 import leafletMarkerShadowUrl from '../../../assets/images/leaflet/marker-shadow.png';
 /* eslint-disable import/no-unresolved */
 import localization from '@city-i18n/localization.json';
-import urls from '@city-assets/urls.json';
-/* eslint-enable import/no-unresolved */
-
 import {hearingShape} from '../../types';
-import { getCorrectContrastMapTileUrl } from '../../utils/map';
 import {parseCollection} from "../../utils/hearingEditor";
+import MapLayers from '../mapLayers/MapLayers';
 
 // This is needed for the invalidateMap not to fire after the component has dismounted and causing error.
 let mapInvalidator;
@@ -393,9 +390,10 @@ class HearingFormStep3 extends React.Component {
   }
   render() {
     if (typeof window === "undefined") return null;  // Skip rendering outside of browser context
-    const {FeatureGroup, Map, TileLayer} = require("react-leaflet");  // Late import to be isomorphic compatible
+    const {FeatureGroup, Map} = require("react-leaflet");  // Late import to be isomorphic compatible
     const {EditControl} = require("react-leaflet-draw");
     const {initialGeoJSON} = this.state;
+    const {language, isHighContrast} = this.props;
 
     return (
       <div className="form-step">
@@ -410,11 +408,7 @@ class HearingFormStep3 extends React.Component {
             className="hearing-map"
           >
             <ZoomControl zoomInTitle="Lähennä" zoomOutTitle="Loitonna"/>
-            <TileLayer
-              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-              url={getCorrectContrastMapTileUrl(urls.rasterMapTiles,
-                urls.highContrastRasterMapTiles, this.props.isHighContrast, this.props.language)}
-            />
+            <MapLayers language={language} isHighContrast={isHighContrast}/>
             <FeatureGroup ref={(group) => { this.featureGroup = group; }}>
               <EditControl
                   position="topleft"

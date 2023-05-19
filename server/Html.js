@@ -41,6 +41,9 @@ export default class Html extends React.Component {
       adminHelpUrl,
       enableResponseCompression,
       emptyCommentString,
+      wmsBaseUrl,
+      wmsAttribution,
+      wmsLayers,
     } = this.props;
     const initialStateHtml = `
     window.STATE = ${JSON.stringify(initialState || {})};
@@ -62,6 +65,9 @@ export default class Html extends React.Component {
     window.ADMIN_HELP_URL = ${JSON.stringify(adminHelpUrl)};
     window.ENABLE_RESPONSE_COMPRESSION = ${JSON.stringify(enableResponseCompression)};
     window.EMPTY_COMMENT_STRING = ${JSON.stringify(emptyCommentString)};
+    window.WMS_BASE_URL = ${JSON.stringify(wmsBaseUrl)};
+    window.WMS_ATTRIBUTION = ${JSON.stringify(wmsAttribution)};
+    window.WMS_LAYERS = ${JSON.stringify(wmsLayers)};
     `;
     const {title, description, url} = this.getMeta();
     return (
@@ -112,4 +118,7 @@ Html.propTypes = {
   adminHelpUrl: PropTypes.string,
   enableResponseCompression: PropTypes.bool,
   emptyCommentString: PropTypes.string,
+  wmsBaseUrl: PropTypes.string,
+  wmsAttribution: PropTypes.string,
+  wmsLayers: PropTypes.array,
 };
