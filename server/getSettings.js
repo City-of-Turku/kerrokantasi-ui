@@ -63,6 +63,7 @@ const optionalKeys = [
   "openid_client_id",
   "openid_audience",
   "openid_authority",
+  "openid_apitoken_url",
   "enable_highcontrast",
   "admin_help_url",
   "enable_response_compression",
