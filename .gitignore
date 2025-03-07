@@ -33,8 +33,9 @@ node_modules
 /.idea
 bower_components
 /kk.config
-/config_dev.toml
 
 /assets/plugins
 
 /assets/js/tracker
+
+.vscode

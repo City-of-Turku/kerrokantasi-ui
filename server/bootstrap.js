@@ -28,6 +28,9 @@ function ignition() {
 
   const faviconPath = path.resolve(assetPaths.cityAssets, 'favicon');
 
+  server.get('/healthz', (req, res) => {
+    res.status(200).send('OK');
+  });
   server.use('/', express.static(paths.OUTPUT));
   server.use('/assets', express.static(paths.ASSETS));
   server.use('/favicon', express.static(faviconPath));

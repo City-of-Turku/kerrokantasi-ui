@@ -1,5 +1,5 @@
 # ===============================================
-FROM helsinkitest/node:12-slim as staticbuilder
+FROM helsinkitest/node:14-slim as staticbuilder
 # ===============================================
 
 # Offical image has npm log verbosity as info. More info - https://github.com/nodejs/docker-node#verbosity
@@ -16,17 +16,15 @@ RUN yarn policies set-version $YARN_VERSION
 
 USER root
 RUN apt-install.sh build-essential
-
-# Use non-root user
-USER appuser
+RUN git clone -c http.sslverify=false https://github.com/markushhgo/kerrokantasi-ui-turku /kerrokantasi-ui-turku
 
 # Install dependencies
-COPY --chown=appuser:appuser package.json yarn.lock /app/
-COPY --chown=appuser:appuser config_dev.toml.example /app/config_dev.toml
-RUN yarn && yarn cache clean --force
+COPY package.json yarn.lock /app/
+RUN yarn install --frozen-lockfile && yarn cache clean --force
+RUN yarn add /kerrokantasi-ui-turku
 
 # Copy all files
-COPY --chown=appuser:appuser . .
+COPY . .
 
 # Compile bundle
 RUN yarn build
