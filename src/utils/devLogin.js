@@ -33,7 +33,7 @@ const DevLoginGate = ({ children, intl }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const isDev = process.env.NODE_ENV === 'development';
+  const isDev = typeof window !== 'undefined' ? window.PUBLIC_URL.includes('-testi') : false;
   const [correctPasswords, setCorrectPasswords] = useState([]);
 
   useEffect(() => {
