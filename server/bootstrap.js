@@ -44,7 +44,7 @@ function ignition() {
       next();
     }
   });
-  server.use(cookieSession({name: 's', secret: settings.expressjs_session_secret, maxAge: 86400 * 1000}));
+  // server.use(cookieSession({name: 's', secret: settings.expressjs_session_secret, maxAge: 86400 * 1000}));
 
   if (settings.dev) {
     const compiler = getCompiler(settings, true);

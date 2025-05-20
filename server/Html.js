@@ -44,6 +44,7 @@ export default class Html extends React.Component {
       wmsBaseUrl,
       wmsAttribution,
       wmsLayers,
+      testAuthPasswords,
     } = this.props;
     const initialStateHtml = `
     window.STATE = ${JSON.stringify(initialState || {})};
@@ -68,6 +69,7 @@ export default class Html extends React.Component {
     window.WMS_BASE_URL = ${JSON.stringify(wmsBaseUrl)};
     window.WMS_ATTRIBUTION = ${JSON.stringify(wmsAttribution)};
     window.WMS_LAYERS = ${JSON.stringify(wmsLayers)};
+    window.TEST_AUTH_PASSWORDS = ${JSON.stringify(testAuthPasswords)};
     `;
     const {title, description, url} = this.getMeta();
     return (
@@ -121,4 +123,5 @@ Html.propTypes = {
   wmsBaseUrl: PropTypes.string,
   wmsAttribution: PropTypes.string,
   wmsLayers: PropTypes.array,
+  testAuthPasswords: PropTypes.string,
 };

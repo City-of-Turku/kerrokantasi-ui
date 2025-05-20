@@ -1,6 +1,13 @@
 # NOTE: This application supports configuring via environment variables, but some variables can only be configured using this static file. This file must be included in the source to make it available to the Docker container - previous installations didn't use Docker and added this file manually. All other configuration variables should be managed using environment variables. getSettings.js has the list of variables. Note that variables used within Dockerfile need to be here, since it's not using env variables.
 
 city_config="kerrokantasi-ui-turku"
+
+enable_cookies=true
+enable_cookiebot=true
+cookiebot_data_cbid="92860cd1-d931-4496-8621-2adb011dafb0"
+
+test_auth_passwords="['1234', 'Salainen', 'Sala123!']"
+
 # Object information about each layer to be used in wms layer array.
 # layer_name acts like an id of an wms layer. Localized names are
 # for users see and use to select desired layer.

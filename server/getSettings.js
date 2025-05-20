@@ -49,6 +49,7 @@ const defaults = {
   enable_cookiebot: false,
   cookiebot_data_cbid: '',
   enable_strong_auth: true,
+  test_auth_passwords: ""
 };
 
 const optionalKeys = [
@@ -77,6 +78,7 @@ const optionalKeys = [
   "enable_strong_auth",
   "wms_base_url",
   "wms_attribution",
+  "test_auth_passwords"
 ];
 
 const mandatoryKeys = [
