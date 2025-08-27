@@ -45,6 +45,11 @@ const defaults = {
   wms_attribution: '',
   // Array of WMS layer objects
   wms_layers: [],
+  // More settings that were not configurable using env variables but were set in config_dev.toml; structured values can't be parsed from env and still need config_dev.toml
+  enable_cookiebot: false,
+  cookiebot_data_cbid: '',
+  enable_strong_auth: true,
+  test_auth_passwords: ""
 };
 
 const optionalKeys = [
@@ -63,10 +68,17 @@ const optionalKeys = [
   "openid_client_id",
   "openid_audience",
   "openid_authority",
+  "openid_apitoken_url",
   "enable_highcontrast",
   "admin_help_url",
   "enable_response_compression",
   "empty_comment_string",
+  "enable_cookiebot",
+  "cookiebot_data_cbid",
+  "enable_strong_auth",
+  "wms_base_url",
+  "wms_attribution",
+  "test_auth_passwords"
 ];
 
 const mandatoryKeys = [

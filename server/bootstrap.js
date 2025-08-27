@@ -28,6 +28,9 @@ function ignition() {
 
   const faviconPath = path.resolve(assetPaths.cityAssets, 'favicon');
 
+  server.get('/healthz', (req, res) => {
+    res.status(200).send('OK');
+  });
   server.use('/', express.static(paths.OUTPUT));
   server.use('/assets', express.static(paths.ASSETS));
   server.use('/favicon', express.static(faviconPath));
@@ -41,7 +44,7 @@ function ignition() {
       next();
     }
   });
-  server.use(cookieSession({name: 's', secret: settings.expressjs_session_secret, maxAge: 86400 * 1000}));
+  // server.use(cookieSession({name: 's', secret: settings.expressjs_session_secret, maxAge: 86400 * 1000}));
 
   if (settings.dev) {
     const compiler = getCompiler(settings, true);

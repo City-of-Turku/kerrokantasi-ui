@@ -55,6 +55,7 @@ function renderHTMLSkeleton(req, res, settings) {
         wmsBaseUrl={settings.wms_base_url}
         wmsAttribution={settings.wms_attribution}
         wmsLayers={settings.wms_layers}
+        testAuthPasswords={settings.test_auth_passwords}
       />
     );
     res.status(200).send('<!DOCTYPE html>' + html);

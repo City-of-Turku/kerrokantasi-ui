@@ -16,6 +16,7 @@ import classNames from 'classnames';
 import cookieUtil from './utils/cookieUtils';
 import { HashLink } from 'react-router-hash-link';
 import cookiebotUtils from './utils/cookiebotUtils';
+import DevLoginGate from "./utils/devLogin";
 
 class App extends React.Component {
   getChildContext() {
@@ -89,7 +90,9 @@ class App extends React.Component {
             role="main"
             tabIndex="-1"
           >
-            <Routes />
+            <DevLoginGate>
+              <Routes />
+            </DevLoginGate>
           </main>
           <Footer language={locale} />
           <ToastContainer

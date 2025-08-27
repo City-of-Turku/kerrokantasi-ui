@@ -26,6 +26,7 @@ const config = {
   wmsBaseUrl: typeof window !== 'undefined' ? window.WMS_BASE_URL : "",
   wmsAttribution: typeof window !== 'undefined' ? window.WMS_ATTRIBUTION : "",
   wmsLayers: typeof window !== 'undefined' ? window.WMS_LAYERS : [],
+  testAuthPasswords: typeof window !== 'undefined' ? window.TEST_AUTH_PASSWORDS : ""
 };
 
 export default config;
