@@ -1,5 +1,5 @@
 # ===============================================
-FROM helsinkitest/node:14-slim as staticbuilder
+FROM node:14-bullseye-slim as staticbuilder
 # ===============================================
 
 # Offical image has npm log verbosity as info. More info - https://github.com/nodejs/docker-node#verbosity
@@ -16,7 +16,7 @@ RUN yarn policies set-version $YARN_VERSION
 
 USER root
 RUN apt-get update && apt-install.sh build-essential
-RUN git clone -c http.sslverify=false https://github.com/markushhgo/kerrokantasi-ui-turku /kerrokantasi-ui-turku
+RUN git clone -c http.sslverify=false https://github.com/City-of-Turku/kerrokantasi-ui-turku /kerrokantasi-ui-turku
 
 # Install dependencies
 COPY package.json yarn.lock /app/
