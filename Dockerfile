@@ -15,7 +15,7 @@ ENV YARN_VERSION 1.19.1
 RUN yarn policies set-version $YARN_VERSION
 
 USER root
-RUN apt-install.sh build-essential
+RUN apt-get update && apt-install.sh build-essential
 RUN git clone -c http.sslverify=false https://github.com/markushhgo/kerrokantasi-ui-turku /kerrokantasi-ui-turku
 
 # Install dependencies
