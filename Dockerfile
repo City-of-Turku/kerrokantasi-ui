@@ -2,6 +2,9 @@
 FROM node:14-bullseye-slim as staticbuilder
 # ===============================================
 
+# Set working directory
+WORKDIR /app
+
 # Offical image has npm log verbosity as info. More info - https://github.com/nodejs/docker-node#verbosity
 ENV NPM_CONFIG_LOGLEVEL warn
 
@@ -15,7 +18,7 @@ ENV YARN_VERSION 1.19.1
 RUN yarn policies set-version $YARN_VERSION
 
 USER root
-RUN apt-get update && apt-get install -y build-essential git
+RUN apt update && apt install -y build-essential git
 RUN git clone -c http.sslverify=false https://github.com/City-of-Turku/kerrokantasi-ui-turku /kerrokantasi-ui-turku
 
 # Install dependencies
