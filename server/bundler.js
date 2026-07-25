@@ -36,22 +36,26 @@ export function getCompiler(settings, withProgress) {
   const compiler = webpack(config);
   let bundleSrc;  // `/app.{SOME_HASH}.js`
 
-  compiler.plugin('emit', (compilation, compileCallback) => {
+  compiler.hooks.emit.tapAsync('bundler', (compilation, compileCallback) => {
     const stats = compilation.getStats().toJson();
     const chunks = stats.chunks.sort(sortChunks);
-    bundleSrc = (compilation.options.output.publicPath || "./") + chunks[0].files[0];
-    settings.bundleSrc = bundleSrc;  // eslint-disable-line no-param-reassign
+    if (chunks.length > 0 && chunks[0].files && chunks[0].files.length > 0) {
+      bundleSrc = (compilation.options.output.publicPath || "./") + chunks[0].files[0];
+      settings.bundleSrc = bundleSrc;  // eslint-disable-line no-param-reassign
+    }
     compileCallback();
   });
 
-  compiler.plugin('done', () => {
+  compiler.hooks.done.tap('bundler', () => {
     // Save bundle entrypoint filename to a known location.
     // We need to save the filename somewhere, as it contains a hash which is subject to changing
     // and it's required to start up the server from a bundle
-    fs.writeFileSync(
-      path.resolve(paths.OUTPUT, 'bundle_src.txt'),
-      bundleSrc,
-    );
+    if (bundleSrc) {
+      fs.writeFileSync(
+        path.resolve(paths.OUTPUT, 'bundle_src.txt'),
+        bundleSrc,
+      );
+    }
   });
 
   return compiler;

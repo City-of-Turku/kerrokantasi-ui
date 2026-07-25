@@ -29,7 +29,6 @@
     "@draft-js-plugins/focus": "^4.1.1",
     "@draft-js-plugins/image": "^4.1.1",
     "@draft-js-plugins/resizeable": "^4.1.0",
-    "@octokit/core": ">=3",
     "alertifyjs": "^1.13.1",
     "autoprefixer": "^8.6.5",
     "babel-core": "^6.26.3",
