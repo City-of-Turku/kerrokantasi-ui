@@ -49,8 +49,10 @@ export function getCompiler(settings, withProgress) {
   compiler.hooks.done.tap('bundler', () => {
     // Save bundle entrypoint filename to a known location.
     // We need to save the filename somewhere, as it contains a hash which is subject to changing
-    // and it's required to start up the server from a bundle
-    if (bundleSrc) {
+    // and it's required to start up the server from a bundle.
+    // In dev mode, webpack-dev-middleware serves from memory so dist/ is never
+    // created on disk — skip the write to avoid blocking WDM's own done handler.
+    if (bundleSrc && !settings.dev) {
       fs.writeFileSync(
         path.resolve(paths.OUTPUT, 'bundle_src.txt'),
         bundleSrc,
