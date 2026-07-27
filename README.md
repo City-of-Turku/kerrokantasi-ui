@@ -56,7 +56,7 @@ Node-specific managers can also directly run `compile(/index.js)` & `server(/ind
 
 * `yarn run fetch-plugins`: fetch optional plugins (see below)
 * `yarn run test`: run tests
-* `yarn test -- -u` update tests
+* `yarn test -- -u`: update snapshots — run this whenever translation strings are added or changed, then commit the updated snapshot files
 
 ### Running service in Docker
 
