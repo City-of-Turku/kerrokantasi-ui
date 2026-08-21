@@ -188,6 +188,7 @@
   "main": "Huvudavsnitt",
   "mainMenu": "Huvudmeny",
   "map": "Karta",
+  "mapAttribution": "Baskarta &copy; Åbo stad, användningstillstånd CC BY 4.0 | &copy; <a href=\"http://osm.org/copyright\">Upphovsmännen bakom OpenStreetMaps</a>",
   "mapView": "Alla höranden på kartan",
   "mostCommented": "Den med mest kommentarer",
   "moveDown": "Flytta ner",

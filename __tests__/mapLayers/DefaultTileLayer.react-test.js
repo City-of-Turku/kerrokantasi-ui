@@ -6,6 +6,7 @@ import { TileLayer } from 'react-leaflet';
 import urls from '@city-assets/urls.json';
 import DefaultTileLayer from '../../src/components/mapLayers/DefaultTileLayer';
 import { getCorrectContrastMapTileUrl } from '../../src/utils/map';
+import getMessage from '../../src/utils/getMessage';
 
 
 const defaultProps = {
@@ -27,7 +28,7 @@ describe('src/components/mapLayers/DefaultTileLayer.js', () => {
             urls.highContrastRasterMapTiles, defaultProps.isHighContrast, defaultProps.language)
         );
         expect(tileLayer.prop('attribution')).toBe(
-          `&copy; <a href="http://osm.org/copyright" rel="noreferrer" target="_blank">OpenStreetMap</a> contributors`
+          getMessage('mapAttribution', defaultProps.language)
         );
       });
     });

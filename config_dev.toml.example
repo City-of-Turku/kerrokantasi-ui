@@ -88,7 +88,7 @@ city_config="cities/helsinki"
 # wms_base_url=
 
 # WMS attribution href string for example:
-# "&copy; <a href='http://osm.org/copyright' rel='noreferrer' target='_blank'>OpenStreetMap</a> contributors"
+# "Base map &copy; Turun kaupunki, license CC BY 4.0 | &copy; <a href="http://osm.org/copyright">OpenStreetMap contributors</a>"
 # Default: ""
 # wms_attribution=
 

@@ -196,6 +196,7 @@
   "main": "Main section",
   "mainMenu": "Main menu",
   "map": "Map",
+  "mapAttribution": "Base map &copy; Turun kaupunki, license CC BY 4.0 | &copy; <a href=\"http://osm.org/copyright\">OpenStreetMap contributors</a>",
   "mapView": "All hearings on map",
   "mostCommented": "Most commented",
   "moveDown": "Move down",
