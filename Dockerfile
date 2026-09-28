@@ -18,6 +18,10 @@ ENV YARN_VERSION 1.19.1
 RUN yarn policies set-version $YARN_VERSION
 
 USER root
+# Debian 11 (bullseye) has reached end-of-life, so its dedicated security repo
+# no longer serves packages (only the main/updates repos still do). Drop it to
+# avoid apt 404s; base bullseye packages are still fetched from deb.debian.org.
+RUN sed -i '/bullseye-security/d' /etc/apt/sources.list
 RUN apt update && apt install -y build-essential git
 RUN git clone -c http.sslverify=false https://github.com/City-of-Turku/kerrokantasi-ui-turku /kerrokantasi-ui-turku
 
